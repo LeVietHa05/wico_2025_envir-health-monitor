@@ -26,7 +26,8 @@
         data.forEach(item => {
           envDiv.innerHTML += `
             <p>Nhiệt độ: ${item.temperature}°C, Độ ẩm: ${item.humidity}%, 
-            Chất lượng không khí: ${item.airQuality}, 
+            PM2.5: ${item.pm25} µg/m³, PM10: ${item.pm10} µg/m³, PM1: ${item.pm1} µg/m³, 
+            UV: ${item.uv}, Sensor: ${item.sensorId}, 
             Thời gian: ${new Date(item.timestamp).toLocaleString()}</p>
           `;
         });
@@ -40,8 +41,7 @@
         data.forEach(item => {
           healthDiv.innerHTML += `
             <p>User: ${item.userId}, Nhịp tim: ${item.heartRate} bpm, 
-            Huyết áp: ${item.bloodPressure.systolic}/${item.bloodPressure.diastolic}, 
-            Oxy: ${item.oxygenLevel}%, 
+            Oxy: ${item.oxygenLevel}%, Nhiệt độ cơ thể: ${item.temperature}°C, 
             Thời gian: ${new Date(item.timestamp).toLocaleString()}</p>
           `;
         });

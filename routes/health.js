@@ -1,73 +1,75 @@
 const express = require('express');
 const router = express.Router();
-const EnvironmentalData = require('../models/EnvironmentalData');
+const db = require('../db');
 
-// GET all environmental data
-router.get('/', async (req, res) => {
-    try {
-        const data = await EnvironmentalData.find();
-        res.json(data);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
-
-// GET one environmental data by ID
-router.get('/:id', async (req, res) => {
-    try {
-        const data = await EnvironmentalData.findById(req.params.id);
-        if (data) res.json(data);
-        else res.status(404).json({ message: 'Data not found' });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
-
-// POST new environmental data
-router.post('/', async (req, res) => {
-    const data = new EnvironmentalData({
-        temperature: req.body.temperature,
-        humidity: req.body.humidity,
-        airQuality: req.body.airQuality,
-        sensorId: req.body.sensorId
+// GET all health data
+router.get('/', (req, res) => {
+    db.all('SELECT * FROM HealthData', [], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ message: err.message });
+        }
+        res.json(rows);
     });
-    try {
-        const newData = await data.save();
-        res.status(201).json(newData);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
 });
 
-// PUT update environmental data
-router.put('/:id', async (req, res) => {
-    try {
-        const data = await EnvironmentalData.findById(req.params.id);
-        if (!data) return res.status(404).json({ message: 'Data not found' });
-
-        data.temperature = req.body.temperature || data.temperature;
-        data.humidity = req.body.humidity || data.humidity;
-        data.airQuality = req.body.airQuality || data.airQuality;
-        data.sensorId = req.body.sensorId || data.sensorId;
-
-        const updatedData = await data.save();
-        res.json(updatedData);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
+// GET one health data by ID
+router.get('/:id', (req, res) => {
+    db.get('SELECT * FROM HealthData WHERE id = ?', [req.params.id], (err, row) => {
+        if (err) {
+            return res.status(500).json({ message: err.message });
+        }
+        if (row) {
+            res.json(row);
+        } else {
+            res.status(404).json({ message: 'Data not found' });
+        }
+    });
 });
 
-// DELETE environmental data
-router.delete('/:id', async (req, res) => {
-    try {
-        const data = await EnvironmentalData.findById(req.params.id);
-        if (!data) return res.status(404).json({ message: 'Data not found' });
+// POST new health data
+router.post('/', (req, res) => {
+    const { userId, heartRate, oxygenLevel, temperature } = req.body;
+    db.run(
+        'INSERT INTO HealthData (userId, heartRate, oxygenLevel, temperature) VALUES (?, ?, ?, ?)',
+        [userId, heartRate, oxygenLevel, temperature],
+        function (err) {
+            if (err) {
+                return res.status(400).json({ message: err.message });
+            }
+            res.status(201).json({ id: this.lastID, ...req.body });
+        }
+    );
+});
 
-        await data.remove();
+// PUT update health data
+router.put('/:id', (req, res) => {
+    const { userId, heartRate, oxygenLevel, temperature } = req.body;
+    db.run(
+        'UPDATE HealthData SET userId = ?, heartRate = ?, oxygenLevel = ?, temperature = ? WHERE id = ?',
+        [userId, heartRate, oxygenLevel, temperature, req.params.id],
+        function (err) {
+            if (err) {
+                return res.status(400).json({ message: err.message });
+            }
+            if (this.changes === 0) {
+                return res.status(404).json({ message: 'Data not found' });
+            }
+            res.json({ id: req.params.id, ...req.body });
+        }
+    );
+});
+
+// DELETE health data
+router.delete('/:id', (req, res) => {
+    db.run('DELETE FROM HealthData WHERE id = ?', [req.params.id], function (err) {
+        if (err) {
+            return res.status(500).json({ message: err.message });
+        }
+        if (this.changes === 0) {
+            return res.status(404).json({ message: 'Data not found' });
+        }
         res.json({ message: 'Data deleted' });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
+    });
 });
 
 module.exports = router;
