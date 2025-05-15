@@ -1,13 +1,52 @@
-<html>
+<!DOCTYPE html>
+<html lang="vi">
 
 <head>
-  <title>Express</title>
-  <link rel="stylesheet" href="/stylesheets/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Environment & Health Monitor</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
-  <h1>Express</h1>
-  <p>Welcome to Express</p>
+  <h1>Environment & Health Monitor</h1>
+
+  <h2>Dữ liệu môi trường</h2>
+  <div id="environmental-data"></div>
+
+  <h2>Dữ liệu sức khỏe</h2>
+  <div id="health-data"></div>
+
+  <script>
+    // Fetch environmental data
+    fetch('/api/environmental')
+      .then(response => response.json())
+      .then(data => {
+        const envDiv = document.getElementById('environmental-data');
+        data.forEach(item => {
+          envDiv.innerHTML += `
+            <p>Nhiệt độ: ${item.temperature}°C, Độ ẩm: ${item.humidity}%, 
+            Chất lượng không khí: ${item.airQuality}, 
+            Thời gian: ${new Date(item.timestamp).toLocaleString()}</p>
+          `;
+        });
+      });
+
+    // Fetch health data
+    fetch('/api/health')
+      .then(response => response.json())
+      .then(data => {
+        const healthDiv = document.getElementById('health-data');
+        data.forEach(item => {
+          healthDiv.innerHTML += `
+            <p>User: ${item.userId}, Nhịp tim: ${item.heartRate} bpm, 
+            Huyết áp: ${item.bloodPressure.systolic}/${item.bloodPressure.diastolic}, 
+            Oxy: ${item.oxygenLevel}%, 
+            Thời gian: ${new Date(item.timestamp).toLocaleString()}</p>
+          `;
+        });
+      });
+  </script>
 </body>
 
 </html>
