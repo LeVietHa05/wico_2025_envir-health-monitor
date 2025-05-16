@@ -37,6 +37,19 @@ db.serialize(() => {
       timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+    // Tạo bảng Users
+    db.run(`
+    CREATE TABLE IF NOT EXISTS Users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT NOT NULL UNIQUE,
+      password TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'user',
+      sensorId TEXT UNIQUE,
+      resetToken TEXT,
+      resetTokenExpiry DATETIME
+    )
+  `);
 });
 
 module.exports = db;

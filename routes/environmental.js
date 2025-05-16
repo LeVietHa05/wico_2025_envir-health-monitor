@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
-// GET all environmental data
+// GET all environmental data (public)
 router.get('/', (req, res) => {
     db.all('SELECT * FROM EnvironmentalData', [], (err, rows) => {
         if (err) {
@@ -12,7 +12,25 @@ router.get('/', (req, res) => {
     });
 });
 
-// GET one environmental data by ID
+// GET latest environmental data for each sensorId (public)
+router.get('/latest', (req, res) => {
+    db.all(`
+    SELECT e1.*
+    FROM EnvironmentalData e1
+    INNER JOIN (
+      SELECT sensorId, MAX(timestamp) as maxTimestamp
+      FROM EnvironmentalData
+      GROUP BY sensorId
+    ) e2 ON e1.sensorId = e2.sensorId AND e1.timestamp = e2.maxTimestamp
+  `, [], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ message: err.message });
+        }
+        res.json(rows);
+    });
+});
+
+// GET one environmental data by ID (public)
 router.get('/:id', (req, res) => {
     db.get('SELECT * FROM EnvironmentalData WHERE id = ?', [req.params.id], (err, row) => {
         if (err) {

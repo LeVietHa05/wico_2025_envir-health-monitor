@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập / Đăng ký</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+
+<body>
+    <h1>Environment & Health Monitor</h1>
+
+    <h2>Đăng ký</h2>
+    <div>
+        <input id="register-email" type="email" placeholder="Email">
+        <input id="register-password" type="password" placeholder="Mật khẩu">
+        <button onclick="register()">Đăng ký</button>
+    </div>
+
+    <h2>Đăng nhập</h2>
+    <div>
+        <input id="login-email" type="email" placeholder="Email">
+        <input id="login-password" type="password" placeholder="Mật khẩu">
+        <button onclick="login()">Đăng nhập</button>
+    </div>
+
+    <h2>Gán Sensor ID</h2>
+    <div>
+        <input id="sensor-id" type="text" placeholder="Sensor ID">
+        <button onclick="assignSensor()">Gán Sensor</button>
+    </div>
+
+    <h2>Quên mật khẩu</h2>
+    <div>
+        <input id="forgot-email" type="email" placeholder="Email">
+        <button onclick="forgotPassword()">Gửi Token</button>
+    </div>
+    <div>
+        <input id="reset-token" type="text" placeholder="Token">
+        <input id="reset-password" type="password" placeholder="Mật khẩu mới">
+        <button onclick="resetPassword()">Reset Mật khẩu</button>
+    </div>
+
+    <script>
+        let token = '';
+
+        async function register() {
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const response = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+            const data = await response.json();
+            alert(data.message);
+        }
+
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+            const data = await response.json();
+            if (data.token) {
+                token = data.token;
+                alert('Đăng nhập thành công');
+                window.location.href = '/';
+            } else {
+                alert(data.message);
+            }
+        }
+
+        async function assignSensor() {
+            const sensorId = document.getElementById('sensor-id').value;
+            const response = await fetch('/api/auth/assign-sensor', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ sensorId }),
+            });
+            const data = await response.json();
+            alert(data.message);
+        }
+
+        async function forgotPassword() {
+            const email = document.getElementById('forgot-email').value;
+            const response = await fetch('/api/auth/forgot-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email }),
+            });
+            const data = await response.json();
+            alert(data.message);
+        }
+
+        async function resetPassword() {
+            const token = document.getElementById('reset-token').value;
+            const newPassword = document.getElementById('reset-password').value;
+            const response = await fetch('/api/auth/reset-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token, newPassword }),
+            });
+            const data = await response.json();
+            alert(data.message);
+        }
+    </script>
+</body>
+
+</html>

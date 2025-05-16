@@ -1,5 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const bcrypt = require('bcrypt');
 
 // Kết nối tới database.db
 const db = new sqlite3.Database(path.join(__dirname, 'database.db'), (err) => {
@@ -9,6 +10,13 @@ const db = new sqlite3.Database(path.join(__dirname, 'database.db'), (err) => {
     }
     console.log('Connected to SQLite database');
 });
+
+// Dữ liệu giả cho Users
+const users = [
+    { email: 'admin@example.com', password: 'admin123', role: 'admin', sensorId: null },
+    { email: 'user1@example.com', password: 'user123', role: 'user', sensorId: 'SENSOR_001' },
+    { email: 'user2@example.com', password: 'user123', role: 'user', sensorId: 'SENSOR_002' },
+];
 
 // Dữ liệu giả cho EnvironmentalData
 const environmentalData = [
@@ -20,14 +28,30 @@ const environmentalData = [
 
 // Dữ liệu giả cho HealthData
 const healthData = [
-    { userId: 'USER_001', heartRate: 72, oxygenLevel: 98, temperature: 36.6 },
-    { userId: 'USER_002', heartRate: 65, oxygenLevel: 97, temperature: 36.8 },
-    { userId: 'USER_003', heartRate: 80, oxygenLevel: 99, temperature: 36.5 },
-    { userId: 'USER_001', heartRate: 70, oxygenLevel: 96, temperature: 36.7 },
+    { userId: '2', heartRate: 72, oxygenLevel: 98, temperature: 36.6 }, // user1
+    { userId: '3', heartRate: 65, oxygenLevel: 97, temperature: 36.8 }, // user2
+    { userId: '2', heartRate: 80, oxygenLevel: 99, temperature: 36.5 }, // user1
+    { userId: '3', heartRate: 70, oxygenLevel: 96, temperature: 36.7 }, // user2
 ];
 
 // Hàm chèn dữ liệu giả
-function seedDatabase() {
+async function seedDatabase() {
+    // Chèn Users
+    for (const user of users) {
+        const hashedPassword = await bcrypt.hash(user.password, 10);
+        db.run(
+            `INSERT INTO Users (email, password, role, sensorId) VALUES (?, ?, ?, ?)`,
+            [user.email, hashedPassword, user.role, user.sensorId],
+            function (err) {
+                if (err) {
+                    console.error('Error inserting User:', err.message);
+                } else {
+                    console.log(`Inserted User with ID: ${this.lastID}`);
+                }
+            }
+        );
+    }
+
     // Chèn EnvironmentalData
     environmentalData.forEach((data) => {
         db.run(

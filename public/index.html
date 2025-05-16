@@ -5,21 +5,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Environment & Health Monitor</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
 
 <body>
   <h1>Environment & Health Monitor</h1>
+  <p><a href="/auth.html">Đăng nhập / Đăng ký</a></p>
 
-  <h2>Dữ liệu môi trường</h2>
+  <h2>Dữ liệu môi trường (Mới nhất theo Sensor)</h2>
   <div id="environmental-data"></div>
 
-  <h2>Dữ liệu sức khỏe</h2>
+  <h2>Dữ liệu sức khỏe (Yêu cầu đăng nhập)</h2>
   <div id="health-data"></div>
 
   <script>
-    // Fetch environmental data
-    fetch('/api/environmental')
+    let token = localStorage.getItem('token') || '';
+
+    // Fetch latest environmental data
+    fetch('/api/environmental/latest')
       .then(response => response.json())
       .then(data => {
         const envDiv = document.getElementById('environmental-data');
@@ -28,24 +31,38 @@
             <p>Nhiệt độ: ${item.temperature}°C, Độ ẩm: ${item.humidity}%, 
             PM2.5: ${item.pm25} µg/m³, PM10: ${item.pm10} µg/m³, PM1: ${item.pm1} µg/m³, 
             UV: ${item.uv}, Sensor: ${item.sensorId}, 
-            Thời gian: ${new Date(item.timestamp).toLocaleString()}</p>
+            Thời gian: ${new Date(item.timestamp).toLocaleString('vi-VN')}</p>
           `;
         });
       });
 
-    // Fetch health data
-    fetch('/api/health')
-      .then(response => response.json())
-      .then(data => {
-        const healthDiv = document.getElementById('health-data');
-        data.forEach(item => {
-          healthDiv.innerHTML += `
-            <p>User: ${item.userId}, Nhịp tim: ${item.heartRate} bpm, 
-            Oxy: ${item.oxygenLevel}%, Nhiệt độ cơ thể: ${item.temperature}°C, 
-            Thời gian: ${new Date(item.timestamp).toLocaleString()}</p>
-          `;
+    // Fetch health data (authenticated)
+    if (token) {
+      fetch('/api/health', {
+        headers: { 'Authorization': `Bearer ${token}` },
+      })
+        .then(response => {
+          if (response.status === 401) {
+            throw new Error('Vui lòng đăng nhập');
+          }
+          return response.json();
+        })
+        .then(data => {
+          const healthDiv = document.getElementById('health-data');
+          data.forEach(item => {
+            healthDiv.innerHTML += `
+              <p>User: ${item.userId}, Nhịp tim: ${item.heartRate} bpm, 
+              Oxy: ${item.oxygenLevel}%, Nhiệt độ cơ thể: ${item.temperature}°C, 
+              Thời gian: ${new Date(item.timestamp).toLocaleString()}</p>
+            `;
+          });
+        })
+        .catch(err => {
+          document.getElementById('health-data').innerHTML = `<p>${err.message}</p>`;
         });
-      });
+    } else {
+      document.getElementById('health-data').innerHTML = '<p>Vui lòng đăng nhập để xem dữ liệu sức khỏe</p>';
+    }
   </script>
 </body>
 
