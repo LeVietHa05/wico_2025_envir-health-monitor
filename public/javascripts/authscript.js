@@ -41,7 +41,20 @@ async function register() {
         const data = await response.json();
         showModal(data.message);
     } catch (err) {
-        showModal('Đăng ký thất bại: ' + err.message);
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error("Error during registration:", errorCode, errorMessage);
+
+        // Ví dụ: Hiển thị thông báo lỗi thân thiện với người dùng
+        if (errorCode === 'auth/invalid-email') {
+            alert('Địa chỉ email không hợp lệ.');
+        } else if (errorCode === 'auth/email-already-in-use') {
+            alert('Email này đã được đăng ký.');
+        } else if (errorCode === 'auth/weak-password') {
+            alert('Mật khẩu quá yếu. Vui lòng sử dụng ít nhất 6 ký tự.');
+        } else {
+            showModal('Đăng nhập thất bại');
+        }
     }
 }
 
@@ -65,8 +78,21 @@ async function login() {
             showModal(data.message);
         }
     } catch (err) {
-        console.error('Login error:', err);
-        showModal('Đăng nhập thất bại: ' + err.message);
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error("Error during login:", errorCode, errorMessage);
+
+        if (errorCode === 'auth/user-not-found') {
+            showModal('Sai thông tin đăng nhập');
+        } else if (errorCode === 'auth/wrong-password') {
+            showModal('Sai thông tin đăng nhập');
+        } else if (errorCode === 'auth/user-disabled') {
+            showModal('Tài khoản của bạn đã bị vô hiệu hóa.');
+        } else if (errorCode === 'auth/too-many-requests') {
+            showModal('Quá nhiều lần đăng nhập thất bại. Vui lòng thử lại sau.');
+        } else {
+            showModal('Đăng nhập thất bại');
+        }
     }
 }
 

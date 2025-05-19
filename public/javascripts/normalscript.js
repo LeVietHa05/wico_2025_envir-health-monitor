@@ -11,3 +11,10 @@ document.querySelector('.close').onclick = function () {
     const modal = document.querySelector('.modal');
     modal.style.display = 'none';
 }
+
+
+// Hàm chuyển đổi form
+function showForm(formId) {
+    document.querySelectorAll('.form-section').forEach(form => form.classList.add('hidden'));
+    document.getElementById(formId).classList.remove('hidden');
+}

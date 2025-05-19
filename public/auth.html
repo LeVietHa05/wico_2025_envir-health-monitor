@@ -8,40 +8,72 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body>
-    <h1>Environment & Health Monitor</h1>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
 
-    <div id="auth-links">
-        <p><a href="/" id="home-link">Trang chủ</a></p>
-        <p id="logout-link" style="display: none;"><button id="logoutBtn">Đăng xuất</button></p>
+        <h1 class="text-2xl font-bold text-center mb-6">Environment & Health Monitor</h1>
+
+        <div id="auth-links" class="flex justify-between mb-4">
+            <a href="/" class="text-blue-600 hover:underline">Trang chủ</a>
+            <button id="logout-link" class="text-red-600 hover:underline hidden" onclick="logout()">Đăng xuất</button>
+        </div>
+
+        <!-- Form Đăng ký -->
+        <div id="register-form" class="form-section hidden">
+            <h2 class="text-xl font-semibold mb-4">Đăng ký</h2>
+            <div class="space-y-4">
+                <input id="register-email" type="email" placeholder="Email"
+                    class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input id="register-password" type="password" placeholder="Mật khẩu"
+                    class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button id="registerBtn" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Đăng
+                    ký</button>
+            </div>
+            <div class="mt-4 text-center">
+                <button onclick="showForm('login-form')" class="text-blue-600 hover:underline">Đã có tài khoản? Đăng
+                    nhập</button>
+            </div>
+        </div>
+
+        <!-- Form Đăng nhập -->
+        <div id="login-form" class="form-section">
+            <h2 class="text-xl font-semibold mb-4">Đăng nhập</h2>
+            <div class="space-y-4">
+                <input id="login-email" type="email" placeholder="Email"
+                    class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input id="login-password" type="password" placeholder="Mật khẩu"
+                    class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button id="loginBtn" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Đăng
+                    nhập</button>
+            </div>
+            <div class="mt-4 text-center">
+                <button onclick="showForm('register-form')" class="text-blue-600 hover:underline">Chưa có tài khoản?
+                    Đăng
+                    ký</button>
+                <br>
+                <button onclick="showForm('forgot-password-form')" class="text-blue-600 hover:underline">Quên mật
+                    khẩu?</button>
+            </div>
+        </div>
+
+        <!-- Form Quên mật khẩu -->
+        <div id="forgot-password-form" class="form-section hidden">
+            <h2 class="text-xl font-semibold mb-4">Quên mật khẩu</h2>
+            <div class="space-y-4">
+                <input id="forgot-email" type="email" placeholder="Email"
+                    class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button id="forgotPasswordBtn" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Gửi
+                    Email
+                    Reset</button>
+            </div>
+            <div class="mt-4 text-center">
+                <button onclick="showForm('login-form')" class="text-blue-600 hover:underline">Quay lại đăng
+                    nhập</button>
+            </div>
+        </div>
+
+
     </div>
-
-    <h2>Đăng ký</h2>
-    <div>
-        <input id="register-email" type="email" placeholder="Email">
-        <input id="register-password" type="password" placeholder="Mật khẩu">
-        <button id="registerBtn">Đăng ký</button>
-    </div>
-
-    <h2>Đăng nhập</h2>
-    <div>
-        <input id="login-email" type="email" placeholder="Email">
-        <input id="login-password" type="password" placeholder="Mật khẩu">
-        <button id="loginBtn">Đăng nhập</button>
-    </div>
-
-    <h2>Gán Sensor ID</h2>
-    <div>
-        <input id="sensor-id" type="text" placeholder="Sensor ID">
-        <button id="assignSensorBtn">Gán Sensor</button>
-    </div>
-
-    <h2>Quên mật khẩu</h2>
-    <div>
-        <input id="forgot-email" type="email" placeholder="Email">
-        <button id="forgotPasswordBtn">Gửi Email Reset</button>
-    </div>
-
     <div class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -49,7 +81,6 @@
             <p id="modal-message"></p>
         </div>
     </div>
-
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
