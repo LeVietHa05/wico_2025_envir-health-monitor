@@ -1,58 +1,65 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
-const bcrypt = require('bcrypt');
+const admin = require('firebase-admin');
+const dotenv = require('dotenv');
+dotenv.config();
 
-// Kết nối tới database.db
+const serviceAccountPath = path.join(__dirname, '/firebase-adminsdk.json');
+const serviceAccount = require(serviceAccountPath);
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+});
+
 const db = new sqlite3.Database(path.join(__dirname, 'database.db'), (err) => {
     if (err) {
         console.error('Error connecting to SQLite:', err.message);
-        return;
+    } else {
+        console.log('Connected to SQLite database');
     }
-    console.log('Connected to SQLite database');
 });
 
-// Dữ liệu giả cho Users
 const users = [
     { email: 'admin@example.com', password: 'admin123', role: 'admin', sensorId: null },
     { email: 'user1@example.com', password: 'user123', role: 'user', sensorId: 'SENSOR_001' },
     { email: 'user2@example.com', password: 'user123', role: 'user', sensorId: 'SENSOR_002' },
 ];
 
-// Dữ liệu giả cho EnvironmentalData
 const environmentalData = [
     { temperature: 25.5, humidity: 60, pm25: 15, pm10: 25, pm1: 10, uv: 3, sensorId: 'SENSOR_001' },
     { temperature: 28.0, humidity: 55, pm25: 20, pm10: 30, pm1: 12, uv: 4, sensorId: 'SENSOR_002' },
     { temperature: 22.3, humidity: 65, pm25: 10, pm10: 15, pm1: 8, uv: 2, sensorId: 'SENSOR_003' },
-    { temperature: 30.1, humidity: 50, pm25: 25, pm10: 35, pm1: 15, uv: 5, sensorId: 'SENSOR_001' },
 ];
 
-// Dữ liệu giả cho HealthData
 const healthData = [
-    { userId: '2', heartRate: 72, oxygenLevel: 98, temperature: 36.6 }, // user1
-    { userId: '3', heartRate: 65, oxygenLevel: 97, temperature: 36.8 }, // user2
-    { userId: '2', heartRate: 80, oxygenLevel: 99, temperature: 36.5 }, // user1
-    { userId: '3', heartRate: 70, oxygenLevel: 96, temperature: 36.7 }, // user2
+    { userId: '2', heartRate: 72, oxygenLevel: 98, temperature: 36.6 },
+    { userId: '3', heartRate: 65, oxygenLevel: 97, temperature: 36.8 },
 ];
 
-// Hàm chèn dữ liệu giả
 async function seedDatabase() {
-    // Chèn Users
     for (const user of users) {
-        const hashedPassword = await bcrypt.hash(user.password, 10);
-        db.run(
-            `INSERT INTO Users (email, password, role, sensorId) VALUES (?, ?, ?, ?)`,
-            [user.email, hashedPassword, user.role, user.sensorId],
-            function (err) {
-                if (err) {
-                    console.error('Error inserting User:', err.message);
-                } else {
-                    console.log(`Inserted User with ID: ${this.lastID}`);
+        try {
+            const userRecord = await admin.auth().createUser({
+                email: user.email,
+                password: user.password,
+            });
+            db.run(
+                `INSERT INTO Users (email, role, sensorId, firebaseUid) VALUES (?, ?, ?, ?)`,
+                [user.email, user.role, user.sensorId, userRecord.uid],
+                function (err) {
+                    if (err) {
+                        console.error('Error inserting User:', err.message);
+                        admin.auth().deleteUser(userRecord.uid);
+                    } else {
+                        console.log(`Inserted User with ID: ${this.lastID}`);
+                    }
                 }
-            }
-        );
+            );
+        } catch (err) {
+            console.error('Error creating Firebase user:', err.message);
+        }
     }
 
-    // Chèn EnvironmentalData
     environmentalData.forEach((data) => {
         db.run(
             `INSERT INTO EnvironmentalData (temperature, humidity, pm25, pm10, pm1, uv, sensorId) VALUES (?, ?, ?, ?, ?, ?, ?)`,
@@ -67,7 +74,6 @@ async function seedDatabase() {
         );
     });
 
-    // Chèn HealthData
     healthData.forEach((data) => {
         db.run(
             `INSERT INTO HealthData (userId, heartRate, oxygenLevel, temperature) VALUES (?, ?, ?, ?)`,
@@ -82,7 +88,6 @@ async function seedDatabase() {
         );
     });
 
-    // Đóng kết nối sau khi chèn xong
     db.close((err) => {
         if (err) {
             console.error('Error closing database:', err.message);
@@ -92,5 +97,4 @@ async function seedDatabase() {
     });
 }
 
-// Chạy hàm chèn dữ liệu
 seedDatabase();

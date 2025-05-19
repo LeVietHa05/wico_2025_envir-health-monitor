@@ -1,141 +1,95 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt');
+const admin = require('firebase-admin');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
 const db = require('../db');
 const { authMiddleware } = require('../middleware/auth');
 
-// Đăng ký
+if (!process.env.FIREBASE_ADMIN_CREDENTIAL_PATH) {
+    console.error('Error: FIREBASE_ADMIN_CREDENTIAL_PATH is not defined in .env');
+    process.exit(1);
+}
+
+const serviceAccountPath = require('path').resolve(__dirname, process.env.FIREBASE_ADMIN_CREDENTIAL_PATH);
+const serviceAccount = require(serviceAccountPath);
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+});
+
 router.post('/register', async (req, res) => {
-    const { email, password } = req.body;
+    const { email } = req.body;
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        db.run(
-            'INSERT INTO Users (email, password) VALUES (?, ?)',
-            [email, hashedPassword],
-            function (err) {
-                if (err) {
-                    return res.status(400).json({ message: 'Email already exists' });
-                }
-                res.status(201).json({ message: 'User registered' });
+        let userRecord;
+        try {
+            userRecord = await admin.auth().getUserByEmail(email);
+        } catch (error) {
+            if (error.code === 'auth/user-not-found') {
+                return res.status(400).json({ message: 'User not found in Firebase. Please register via client.' });
             }
-        );
+            throw error;
+        }
+
+        db.get('SELECT * FROM Users WHERE email = ?', [email], (err, existingUser) => {
+            if (err) {
+                return res.status(500).json({ message: 'Database error' });
+            }
+            if (existingUser) {
+                admin.auth().deleteUser(userRecord.uid).catch((deleteErr) => {
+                    console.error('Error deleting Firebase user:', deleteErr.message);
+                });
+                return res.status(400).json({ message: 'Email already registered in database' });
+            }
+
+            db.run(
+                'INSERT INTO Users (email, role, firebaseUid) VALUES (?, ?, ?)',
+                [email, 'user', userRecord.uid],
+                function (err) {
+                    if (err) {
+                        admin.auth().deleteUser(userRecord.uid).catch((deleteErr) => {
+                            console.error('Error deleting Firebase user:', deleteErr.message);
+                        });
+                        return res.status(400).json({ message: 'Error creating user in database' });
+                    }
+                    res.status(201).json({ message: 'User registered' });
+                }
+            );
+        });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
 
-// Đăng nhập
-router.post('/login', (req, res) => {
-    const { email, password } = req.body;
-    db.get('SELECT * FROM Users WHERE email = ?', [email], async (err, user) => {
-        if (err || !user) {
-            return res.status(401).json({ message: 'Invalid credentials' });
-        }
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ message: 'Invalid credentials' });
-        }
-        const token = jwt.sign(
-            { id: user.id, role: user.role },
-            process.env.JWT_SECRET,
-            { expiresIn: '1h' }
-        );
-        res.json({ token });
-    });
-});
-
-// Đổi mật khẩu
-router.post('/change-password', authMiddleware, async (req, res) => {
-    const { oldPassword, newPassword } = req.body;
-    db.get('SELECT password FROM Users WHERE id = ?', [req.user.id], async (err, user) => {
-        if (err || !user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-        const isMatch = await bcrypt.compare(oldPassword, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ message: 'Invalid old password' });
-        }
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-        db.run(
-            'UPDATE Users SET password = ? WHERE id = ?',
-            [hashedPassword, req.user.id],
-            (err) => {
-                if (err) {
-                    return res.status(500).json({ message: err.message });
-                }
-                res.json({ message: 'Password changed' });
-            }
-        );
-    });
-});
-
-// Quên mật khẩu
-router.post('/forgot-password', (req, res) => {
+router.post('/login', async (req, res) => {
     const { email } = req.body;
-    db.get('SELECT * FROM Users WHERE email = ?', [email], (err, user) => {
-        if (err || !user) {
-            return res.status(404).json({ message: 'Email not found' });
-        }
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        const expiry = new Date(Date.now() + 3600000).toISOString();
-        db.run(
-            'UPDATE Users SET resetToken = ?, resetTokenExpiry = ? WHERE id = ?',
-            [token, expiry, user.id],
-            (err) => {
-                if (err) {
-                    return res.status(500).json({ message: err.message });
-                }
-                // Giả lập gửi email
-                const transporter = nodemailer.createTransport({
-                    service: 'gmail',
-                    auth: {
-                        user: process.env.EMAIL_USER,
-                        pass: process.env.EMAIL_PASS,
-                    },
-                });
-                transporter.sendMail({
-                    from: process.env.EMAIL_USER,
-                    to: email,
-                    subject: 'Password Reset',
-                    text: `Use this token to reset your password: ${token}`,
-                }).then(() => {
-                    res.json({ message: 'Reset token sent to email' });
-                }).catch((err) => {
-                    res.status(500).json({ message: 'Error sending email' });
-                });
-            }
-        );
-    });
-});
-
-// Reset mật khẩu
-router.post('/reset-password', (req, res) => {
-    const { token, newPassword } = req.body;
-    db.get(
-        'SELECT * FROM Users WHERE resetToken = ? AND resetTokenExpiry > ?',
-        [token, new Date().toISOString()],
-        async (err, user) => {
+    try {
+        const userRecord = await admin.auth().getUserByEmail(email);
+        db.get('SELECT * FROM Users WHERE firebaseUid = ?', [userRecord.uid], (err, user) => {
             if (err || !user) {
-                return res.status(400).json({ message: 'Invalid or expired token' });
+                return res.status(404).json({ message: 'User not found' });
             }
-            const hashedPassword = await bcrypt.hash(newPassword, 10);
-            db.run(
-                'UPDATE Users SET password = ?, resetToken = NULL, resetTokenExpiry = NULL WHERE id = ?',
-                [hashedPassword, user.id],
-                (err) => {
-                    if (err) {
-                        return res.status(500).json({ message: err.message });
-                    }
-                    res.json({ message: 'Password reset successful' });
-                }
+            const token = jwt.sign(
+                { id: user.id, role: user.role },
+                process.env.JWT_SECRET,
+                { expiresIn: '1h' }
             );
-        }
-    );
+            res.json({ token });
+        });
+    } catch (err) {
+        res.status(401).json({ message: 'Invalid credentials' });
+    }
 });
 
-// Gán sensorId
+router.post('/forgot-password', async (req, res) => {
+    const { email } = req.body;
+    try {
+        const link = await admin.auth().generatePasswordResetLink(email);
+        res.json({ message: 'Password reset link sent' });
+    } catch (err) {
+        res.status(400).json({ message: 'Email not found or error occurred' });
+    }
+});
+
 router.post('/assign-sensor', authMiddleware, (req, res) => {
     const { sensorId } = req.body;
     db.run(
@@ -151,6 +105,15 @@ router.post('/assign-sensor', authMiddleware, (req, res) => {
             res.json({ message: 'Sensor ID assigned' });
         }
     );
+});
+
+router.post('/logout', authMiddleware, (req, res) => {
+    try {
+        // Vì token được lưu ở client, server chỉ cần xác nhận yêu cầu
+        res.json({ message: 'Logged out successfully' });
+    } catch (err) {
+        res.status(500).json({ message: 'Error logging out' });
+    }
 });
 
 module.exports = router;

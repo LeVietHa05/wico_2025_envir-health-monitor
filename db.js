@@ -1,7 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
-// Kết nối tới file database.db
 const db = new sqlite3.Database(path.join(__dirname, 'database.db'), (err) => {
     if (err) {
         console.error('Error connecting to SQLite:', err.message);
@@ -10,7 +9,6 @@ const db = new sqlite3.Database(path.join(__dirname, 'database.db'), (err) => {
     }
 });
 
-// Tạo bảng EnvironmentalData
 db.serialize(() => {
     db.run(`
     CREATE TABLE IF NOT EXISTS EnvironmentalData (
@@ -26,7 +24,6 @@ db.serialize(() => {
     )
   `);
 
-    // Tạo bảng HealthData
     db.run(`
     CREATE TABLE IF NOT EXISTS HealthData (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,16 +35,13 @@ db.serialize(() => {
     )
   `);
 
-    // Tạo bảng Users
     db.run(`
     CREATE TABLE IF NOT EXISTS Users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       email TEXT NOT NULL UNIQUE,
-      password TEXT NOT NULL,
       role TEXT NOT NULL DEFAULT 'user',
       sensorId TEXT UNIQUE,
-      resetToken TEXT,
-      resetTokenExpiry DATETIME
+      firebaseUid TEXT NOT NULL UNIQUE
     )
   `);
 });

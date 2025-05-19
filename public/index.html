@@ -5,23 +5,68 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Environment & Health Monitor</title>
-  <link rel="stylesheet" href="/stylesheets/style.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
   <h1>Environment & Health Monitor</h1>
-  <p><a href="/auth.html">Đăng nhập / Đăng ký</a></p>
+  <div id="auth-links">
+    <p id="login-link"><a href="/auth.html">Đăng nhập / Đăng ký</a></p>
+    <p id="logout-link" style="display: none;"><button onclick="logout()">Đăng xuất</button></p>
+  </div>
 
-  <h2>Dữ liệu môi trường (Mới nhất theo Sensor)</h2>
+  <h2>Dữ liệu môi trường</h2>
   <div id="environmental-data"></div>
 
-  <h2>Dữ liệu sức khỏe (Yêu cầu đăng nhập)</h2>
+  <h2>Dữ liệu sức khỏe</h2>
   <div id="health-data"></div>
 
-  <script>
-    let token = localStorage.getItem('token') || '';
+  <div class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Thông báo</h2>
+      <p id="modal-message"></p>
+    </div>
+  </div>
 
-    // Fetch latest environmental data
+  <script src="javascripts/normalscript.js"></script>
+  <script>
+    const token = localStorage.getItem('token') || '';
+
+    // Hiển thị nút đăng xuất nếu đã đăng nhập
+    if (token) {
+      document.getElementById('logout-link').style.display = 'block';
+      document.getElementById('login-link').style.display = 'none';
+    }
+
+    // Hàm đăng xuất
+    async function logout() {
+      try {
+        // Gọi API logout
+        const response = await fetch('/api/auth/logout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        if (response.ok) {
+          // Xóa token khỏi localStorage
+          localStorage.removeItem('token');
+          alert(data.message);
+          // Tải lại trang
+          window.location.reload();
+        } else {
+          alert(data.message);
+        }
+      } catch (err) {
+        console.error('Logout error:', err);
+        alert('Đăng xuất thất bại: ' + err.message);
+      }
+    }
+
+    // Fetch dữ liệu môi trường
     fetch('/api/environmental/latest')
       .then(response => response.json())
       .then(data => {
@@ -31,12 +76,12 @@
             <p>Nhiệt độ: ${item.temperature}°C, Độ ẩm: ${item.humidity}%, 
             PM2.5: ${item.pm25} µg/m³, PM10: ${item.pm10} µg/m³, PM1: ${item.pm1} µg/m³, 
             UV: ${item.uv}, Sensor: ${item.sensorId}, 
-            Thời gian: ${new Date(item.timestamp).toLocaleString('vi-VN')}</p>
+            Thời gian: ${new Date(item.timestamp).toLocaleString()}</p>
           `;
         });
       });
 
-    // Fetch health data (authenticated)
+    // Fetch dữ liệu sức khỏe
     if (token) {
       fetch('/api/health', {
         headers: { 'Authorization': `Bearer ${token}` },
