@@ -71,6 +71,11 @@ async function login() {
 }
 
 async function assignSensor() {
+    const token = localStorage.getItem('token') || '';
+    if (!token) {
+        showModal('Bạn cần đăng nhập để thực hiện hành động này');
+        return;
+    }
     const sensorId = document.getElementById('sensor-id').value;
     console.log('Assigning sensor ID:', sensorId);
     try {
@@ -103,6 +108,11 @@ async function forgotPassword() {
 }
 
 async function logout() {
+    const token = localStorage.getItem('token') || '';
+    if (!token) {
+        showModal('Bạn cần đăng nhập để thực hiện hành động này');
+        return;
+    }
     try {
         // Đăng xuất khỏi Firebase
         await auth.signOut();
