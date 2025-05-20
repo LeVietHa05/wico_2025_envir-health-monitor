@@ -13,6 +13,7 @@ router.get('/', authMiddleware, (req, res) => {
         if (err) {
             return res.status(500).json({ message: err.message });
         }
+        console.log('Health data retrieved:', rows);
         res.json(rows);
     });
 });

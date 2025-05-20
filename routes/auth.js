@@ -69,7 +69,7 @@ router.post('/login', async (req, res) => {
                 return res.status(404).json({ message: 'User not found' });
             }
             const token = jwt.sign(
-                { id: user.id, role: user.role },
+                { id: user.id, role: user.role, sensorId: user.sensorId },
                 process.env.JWT_SECRET,
                 { expiresIn: '1h' }
             );
@@ -102,7 +102,7 @@ router.post('/assign-sensor', authMiddleware, (req, res) => {
             if (this.changes === 0) {
                 return res.status(404).json({ message: 'User not found' });
             }
-            res.json({ message: 'Sensor ID assigned' });
+            res.json({ message: 'Gán sensor thành công' });
         }
     );
 });

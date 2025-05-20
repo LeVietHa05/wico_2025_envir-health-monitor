@@ -32,61 +32,64 @@ const environmentalData = [
 ];
 
 const healthData = [
-    { userId: '2', heartRate: 72, oxygenLevel: 98, temperature: 36.6 },
-    { userId: '3', heartRate: 65, oxygenLevel: 97, temperature: 36.8 },
+    { userId: '1', sensorId: 'SENSOR_001', heartRate: 72, oxygenLevel: 98, temperature: 36.6 },
+    { userId: '2', sensorId: 'SENSOR_003', heartRate: 65, oxygenLevel: 97, temperature: 36.8 },
+    { userId: '4', sensorId: 'SENSOR_002', heartRate: 78, oxygenLevel: 99, temperature: 36.7 },
+    { userId: '4', sensorId: 'SENSOR_002', heartRate: 68, oxygenLevel: 100, temperature: 36.5 },
 ];
 
 async function seedDatabase() {
-    for (const user of users) {
-        try {
-            const userRecord = await admin.auth().createUser({
-                email: user.email,
-                password: user.password,
-            });
-            db.run(
-                `INSERT INTO Users (email, role, sensorId, firebaseUid) VALUES (?, ?, ?, ?)`,
-                [user.email, user.role, user.sensorId, userRecord.uid],
-                function (err) {
-                    if (err) {
-                        console.error('Error inserting User:', err.message);
-                        admin.auth().deleteUser(userRecord.uid);
-                    } else {
-                        console.log(`Inserted User with ID: ${this.lastID}`);
-                    }
+//     for (const user of users) {
+//         try {
+//             const userRecord = await admin.auth().createUser({
+//                 email: user.email,
+//                 password: user.password,
+//             });
+//             db.run(
+//                 `INSERT INTO Users (email, role, sensorId, firebaseUid) VALUES (?, ?, ?, ?)`,
+//                 [user.email, user.role, user.sensorId, userRecord.uid],
+//                 function (err) {
+//                     if (err) {
+//                         console.error('Error inserting User:', err.message);
+//                         admin.auth().deleteUser(userRecord.uid);
+//                     } else {
+//                         console.log(`Inserted User with ID: ${this.lastID}`);
+//                     }
+//                 }
+//             );
+//         } catch (err) {
+//             console.error('Error creating Firebase user:', err.message);
+//         }
+//     }
+// 
+//     environmentalData.forEach((data) => {
+//         db.run(
+//             `INSERT INTO EnvironmentalData (temperature, humidity, pm25, pm10, pm1, uv, sensorId) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+//             [data.temperature, data.humidity, data.pm25, data.pm10, data.pm1, data.uv, data.sensorId],
+//             function (err) {
+//                 if (err) {
+//                     console.error('Error inserting EnvironmentalData:', err.message);
+//                 } else {
+//                     console.log(`Inserted EnvironmentalData with ID: ${this.lastID}`);
+//                 }
+//             }
+//         );
+//     });
+
+    healthData.forEach((data) => {
+        
+        db.run(
+            `INSERT INTO HealthData (userId, sensorId,  heartRate, oxygenLevel, temperature) VALUES (?, ?, ?, ?, ?)`,
+            [data.userId, data.sensorId, data.heartRate, data.oxygenLevel, data.temperature],
+            function (err) {
+                if (err) {
+                    console.error('Error inserting HealthData:', err.message);
+                } else {
+                    console.log(`Inserted HealthData with ID: ${this.lastID}`);
                 }
-            );
-        } catch (err) {
-            console.error('Error creating Firebase user:', err.message);
-        }
-    }
-
-    // environmentalData.forEach((data) => {
-    //     db.run(
-    //         `INSERT INTO EnvironmentalData (temperature, humidity, pm25, pm10, pm1, uv, sensorId) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    //         [data.temperature, data.humidity, data.pm25, data.pm10, data.pm1, data.uv, data.sensorId],
-    //         function (err) {
-    //             if (err) {
-    //                 console.error('Error inserting EnvironmentalData:', err.message);
-    //             } else {
-    //                 console.log(`Inserted EnvironmentalData with ID: ${this.lastID}`);
-    //             }
-    //         }
-    //     );
-    // });
-
-    // healthData.forEach((data) => {
-    //     db.run(
-    //         `INSERT INTO HealthData (userId, heartRate, oxygenLevel, temperature) VALUES (?, ?, ?, ?)`,
-    //         [data.userId, data.heartRate, data.oxygenLevel, data.temperature],
-    //         function (err) {
-    //             if (err) {
-    //                 console.error('Error inserting HealthData:', err.message);
-    //             } else {
-    //                 console.log(`Inserted HealthData with ID: ${this.lastID}`);
-    //             }
-    //         }
-    //     );
-    // });
+            }
+        );
+    });
 
     db.close((err) => {
         if (err) {

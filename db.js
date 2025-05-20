@@ -31,6 +31,7 @@ db.serialize(() => {
       heartRate REAL NOT NULL,
       oxygenLevel REAL NOT NULL,
       temperature REAL NOT NULL,
+      sensorId TEXT NOT NULL,
       timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);

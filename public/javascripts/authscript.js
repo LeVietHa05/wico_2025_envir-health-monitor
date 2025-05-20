@@ -16,7 +16,7 @@ const token = localStorage.getItem('token') || '';
 
 // Hiển thị nút đăng xuất nếu đã đăng nhập
 if (token) {
-    document.getElementById('logout-link').style.display = 'block';
+    document.getElementById('logoutBtn').style.display = 'block';
     document.querySelector('a[href="/auth.html"]').style.display = 'none';
 }
 
@@ -115,6 +115,7 @@ async function assignSensor() {
         });
         const data = await response.json();
         showModal(data.message);
+        window.location.reload();
     } catch (err) {
         console.error('Assign sensor error:', err);
         showModal('Gán sensor thất bại: ' + err.message);
