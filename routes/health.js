@@ -13,7 +13,6 @@ router.get('/', authMiddleware, (req, res) => {
         if (err) {
             return res.status(500).json({ message: err.message });
         }
-        console.log('Health data retrieved:', rows);
         res.json(rows);
     });
 });
@@ -32,6 +31,24 @@ router.get('/:id', authMiddleware, (req, res) => {
         }
         res.json(row);
     });
+});
+
+router.get('/user/:userId', authMiddleware, (req, res) => {
+    if (req.user.role !== 'admin' && req.user.id !== req.params.userId) {
+        return res.status(403).json({ message: 'Access denied' });
+    }
+    db.get('SELECT * FROM HealthData WHERE userId = ? LIMIT 10',
+        [req.params.userId],
+        (err, row) => {
+            if (err) {
+                return res.status(500).json({ message: err.message });
+            }
+            if (!row) {
+                return res.status(404).json({ message: 'Data not found' });
+            }
+            
+            res.json(row.reverse()); // reverse to have oldest first
+        });
 });
 
 // POST new health data (authenticated)

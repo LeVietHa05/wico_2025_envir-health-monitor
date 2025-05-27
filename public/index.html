@@ -48,13 +48,12 @@
   </main>
 
   <!-- Modal for sensor charts -->
-  <div id="sensorModal"
-    class="fixed inset-0 bg-white/30 backdrop-blur-sm bg-opacity-50 flex items-center justify-center hidden z-50">
-    <div class="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto relative">
+  <div id="sensorModal" class="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto relative  shadow-lg/30">
       <button id="modalCloseBtn"
         class="absolute top-2 right-2 text-gray-600 hover:text-gray-900 text-2xl font-bold">&times;</button>
       <h2 class="text-xl font-semibold mb-4">Sensor Data Charts</h2>
-      <div id="chartsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div id="chartsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6 *:shadow-lg">
         <div>
           <h3 class="font-semibold mb-2">Temperature (°C)</h3>
           <canvas id="tempChart"></canvas>
@@ -82,6 +81,10 @@
       </div>
     </div>
   </div>
+
+  <!-- modal for Health chart -->
+
+  <!-- Modal for notification -->
   <div class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
@@ -111,7 +114,7 @@
         const envDiv = document.getElementById('environmental-data');
         data.forEach(item => {
           const sensorDiv = document.createElement('div');
-          sensorDiv.className = 'bg-white *:m-1 p-4 rounded-lg shadow cursor-pointer *:hover:scale-110';
+          sensorDiv.className = 'bg-white *:m-1 p-4 rounded-lg shadow cursor-pointer *:hover:scale-110 *:shadow *:hover:bg-green-300 *:transition';
           sensorDiv.innerHTML = `
             <h3 class="font-semibold">Sensor: ${item.sensorId}</h3>
             <p>Temperature: <span class="${item.temperature >= 20 && item.temperature <= 28 ? 'text-green-500' : 'text-red-500'}">${item.temperature}</span>°C</p>
@@ -155,7 +158,7 @@
           }
           data.forEach(item => {
             healthDiv.innerHTML += `
-              <div class="bg-white p-4 rounded-lg shadow">
+              <div class="bg-white p-4 rounded-lg shadow *:m-1 *:shadow">
                 <h3 class="font-semibold">User: ${item.email}</h3>
                 <p>Heart Rate: <span class="${item.heartRate >= 60 && item.heartRate <= 100 ? 'text-green-500' : 'text-red-500'}">${item.heartRate}</span> bpm</p>
                 <p>Oxygen: <span class="${item.oxygenLevel >= 95 && item.oxygenLevel <= 100 ? 'text-green-500' : 'text-red-500'}">${item.oxygenLevel}</span>%</p>
@@ -210,31 +213,31 @@
           console.log(datas)
 
           const charts = ['temperature', 'humidity', 'pm25', 'pm10', 'pm1', 'uv'];// Chart types
-
+          let dataset = {}
           //create dataset and labels for each type
           for (chart of charts) {
             //create dataset and labels
-            let dataset = {}
-            dataset.data = datas.map(data => {
+            dataset[chart] = {}
+            dataset[chart].data = datas.map(data => {
               return data[chart]
             })
-            dataset.labels = datas.map(data => data.timestamp)
-
-            // Destroy existing charts if any
-            if (tempChart) tempChart.destroy();
-            if (humidityChart) humidityChart.destroy();
-            if (pm25Chart) pm25Chart.destroy();
-            if (pm10Chart) pm10Chart.destroy();
-            if (pm1Chart) pm1Chart.destroy();
-            if (uvChart) uvChart.destroy();
-
-            tempChart = createLineChart(document.getElementById('tempChart').getContext('2d'), 'Temperature (°C)', dataset, 'rgba(255, 99, 132, 1)');
-            humidityChart = createLineChart(document.getElementById('humidityChart').getContext('2d'), 'Humidity (%)', dataset, 'rgba(54, 162, 235, 1)');
-            pm25Chart = createLineChart(document.getElementById('pm25Chart').getContext('2d'), 'PM2.5 (µg/m³)', dataset, 'rgba(255, 206, 86, 1)');
-            pm10Chart = createLineChart(document.getElementById('pm10Chart').getContext('2d'), 'PM10 (µg/m³)', dataset, 'rgba(75, 192, 192, 1)');
-            pm1Chart = createLineChart(document.getElementById('pm1Chart').getContext('2d'), 'PM1 (µg/m³)', dataset, 'rgba(153, 102, 255, 1)');
-            uvChart = createLineChart(document.getElementById('uvChart').getContext('2d'), 'UV Index', dataset, 'rgba(255, 159, 64, 1)');
+            dataset[chart].labels = datas.map(data => data.timestamp)
           }
+          console.log(dataset)
+          // Destroy existing charts if any
+          if (tempChart) tempChart.destroy();
+          if (humidityChart) humidityChart.destroy();
+          if (pm25Chart) pm25Chart.destroy();
+          if (pm10Chart) pm10Chart.destroy();
+          if (pm1Chart) pm1Chart.destroy();
+          if (uvChart) uvChart.destroy();
+
+          tempChart = createLineChart(document.getElementById('tempChart').getContext('2d'), 'Temperature (°C)', dataset.temperature, 'rgba(255, 99, 132, 1)');
+          humidityChart = createLineChart(document.getElementById('humidityChart').getContext('2d'), 'Humidity (%)', dataset.humidity, 'rgba(54, 162, 235, 1)');
+          pm25Chart = createLineChart(document.getElementById('pm25Chart').getContext('2d'), 'PM2.5 (µg/m³)', dataset.pm25, 'rgba(255, 206, 86, 1)');
+          pm10Chart = createLineChart(document.getElementById('pm10Chart').getContext('2d'), 'PM10 (µg/m³)', dataset.pm10, 'rgba(75, 192, 192, 1)');
+          pm1Chart = createLineChart(document.getElementById('pm1Chart').getContext('2d'), 'PM1 (µg/m³)', dataset.pm1, 'rgba(153, 102, 255, 1)');
+          uvChart = createLineChart(document.getElementById('uvChart').getContext('2d'), 'UV Index', dataset.uv, 'rgba(255, 159, 64, 1)');
         })
     }
     // Close modal
