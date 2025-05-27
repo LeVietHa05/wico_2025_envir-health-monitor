@@ -2,13 +2,14 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Environment & Health Monitor</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-100">
   <header class="bg-white shadow">
     <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
       <h1 class="text-2xl font-bold">Environment & Health Monitor</h1>
@@ -20,7 +21,6 @@
   </header>
 
   <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-
     <!-- Environmental Data -->
     <section class="mb-8">
       <h2 class="text-xl font-semibold mb-4">Latest Environmental Data from Sensors</h2>
@@ -39,13 +39,49 @@
       <div class="bg-white p-6 rounded-lg shadow">
         <div class="space-y-4">
           <input id="sensor-id" type="text" placeholder="Sensor ID"
-            class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <button id="assignSensorBtn" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Assign Sensor</button>
+            class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <button id="assignSensorBtn" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Assign
+            Sensor</button>
         </div>
       </div>
     </section>
   </main>
 
+  <!-- Modal for sensor charts -->
+  <div id="sensorModal"
+    class="fixed inset-0 bg-white/30 backdrop-blur-sm bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto relative">
+      <button id="modalCloseBtn"
+        class="absolute top-2 right-2 text-gray-600 hover:text-gray-900 text-2xl font-bold">&times;</button>
+      <h2 class="text-xl font-semibold mb-4">Sensor Data Charts</h2>
+      <div id="chartsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-semibold mb-2">Temperature (°C)</h3>
+          <canvas id="tempChart"></canvas>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-2">Humidity (%)</h3>
+          <canvas id="humidityChart"></canvas>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-2">PM2.5 (µg/m³)</h3>
+          <canvas id="pm25Chart"></canvas>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-2">PM10 (µg/m³)</h3>
+          <canvas id="pm10Chart"></canvas>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-2">PM1 (µg/m³)</h3>
+          <canvas id="pm1Chart"></canvas>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-2">UV Index</h3>
+          <canvas id="uvChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
@@ -68,24 +104,30 @@
       document.getElementById('login-link').classList.add('hidden');
       document.getElementById('assign-sensor-section').classList.remove('hidden');
     }
-
+    // Fetch and render environmental data
     fetch('/api/environmental/latest')
       .then(response => response.json())
       .then(data => {
         const envDiv = document.getElementById('environmental-data');
         data.forEach(item => {
-          envDiv.innerHTML += `
-            <div class="bg-white p-4 rounded-lg shadow">
-              <h3 class="font-semibold">Sensor: ${item.sensorId}</h3>
-              <p>Temperature: <span class="${item.temperature >= 20 && item.temperature <= 28 ? 'text-green-500' : 'text-red-500'}">${item.temperature}</span>°C</p>
-              <p>Humidity: <span class="${item.humidity >= 30 && item.humidity <= 80 ? 'text-green-500' : 'text-red-500'}">${item.humidity}</span>%</p>
-              <p>PM2.5: <span class="${item.pm25 <= 25 ? 'text-green-500' : 'text-red-500'}">${item.pm25}</span> µg/m³</p>
-              <p>PM10: <span class="${item.pm10 <= 50 ? 'text-green-500' : 'text-red-500'}">${item.pm10}</span> µg/m³</p>
-              <p>PM1: <span class="${item.pm1 <= 15 ? 'text-green-500' : 'text-red-500'}">${item.pm1}</span> µg/m³</p>
-              <p>UV: <span class="${item.uv <= 5 ? 'text-green-500' : 'text-red-500'}">${item.uv}</span></p>
-              <p class="text-sm text-gray-500">Time: ${new Date(item.timestamp).toLocaleString()}</p>
-            </div>
+          const sensorDiv = document.createElement('div');
+          sensorDiv.className = 'bg-white *:m-1 p-4 rounded-lg shadow cursor-pointer *:hover:scale-110';
+          sensorDiv.innerHTML = `
+            <h3 class="font-semibold">Sensor: ${item.sensorId}</h3>
+            <p>Temperature: <span class="${item.temperature >= 20 && item.temperature <= 28 ? 'text-green-500' : 'text-red-500'}">${item.temperature}</span>°C</p>
+            <p>Humidity: <span class="${item.humidity >= 30 && item.humidity <= 80 ? 'text-green-500' : 'text-red-500'}">${item.humidity}</span>%</p>
+            <p>PM2.5: <span class="${item.pm25 <= 25 ? 'text-green-500' : 'text-red-500'}">${item.pm25}</span> µg/m³</p>
+            <p>PM10: <span class="${item.pm10 <= 50 ? 'text-green-500' : 'text-red-500'}">${item.pm10}</span> µg/m³</p>
+            <p>PM1: <span class="${item.pm1 <= 15 ? 'text-green-500' : 'text-red-500'}">${item.pm1}</span> µg/m³</p>
+            <p>UV: <span class="${item.uv <= 5 ? 'text-green-500' : 'text-red-500'}">${item.uv}</span></p>
+            <p class="text-sm text-gray-500">Time: ${new Date(item.timestamp).toLocaleString()}</p>
           `;
+
+          sensorDiv.addEventListener('click', () => {
+            openSensorModal(item.sensorId);
+          });
+
+          envDiv.appendChild(sensorDiv);
         });
       })
       .catch(err => {
@@ -129,6 +171,77 @@
     } else {
       document.getElementById('health-data').innerHTML = '<p class="text-gray-500">Please login to view health data</p>';
     }
+
+    // Chart instances
+    let tempChart, humidityChart, pm25Chart, pm10Chart, pm1Chart, uvChart;
+
+    // Function to create a line chart
+    function createLineChart(ctx, label, data, borderColor) {
+      return new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.labels,
+          datasets: [{
+            label: label,
+            data: data.data,
+            borderColor: borderColor,
+            fill: false,
+            tension: 0.1
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { display: true, title: { display: true, text: 'Latest 10 readings' } },
+            y: { display: true, beginAtZero: true }
+          }
+        }
+      });
+    }
+    // Open modal and render charts for a sensor
+    function openSensorModal(sensorId) {
+      const modal = document.getElementById('sensorModal');
+      modal.classList.remove('hidden');
+
+      //fetch data from /api/enviroment/:sensorID
+      fetch(`/api/environmental/sensor/${sensorId}`)
+        .then(res => res.json())
+        .then(datas => {
+          console.log(datas)
+
+          const charts = ['temperature', 'humidity', 'pm25', 'pm10', 'pm1', 'uv'];// Chart types
+
+          //create dataset and labels for each type
+          for (chart of charts) {
+            //create dataset and labels
+            let dataset = {}
+            dataset.data = datas.map(data => {
+              return data[chart]
+            })
+            dataset.labels = datas.map(data => data.timestamp)
+
+            // Destroy existing charts if any
+            if (tempChart) tempChart.destroy();
+            if (humidityChart) humidityChart.destroy();
+            if (pm25Chart) pm25Chart.destroy();
+            if (pm10Chart) pm10Chart.destroy();
+            if (pm1Chart) pm1Chart.destroy();
+            if (uvChart) uvChart.destroy();
+
+            tempChart = createLineChart(document.getElementById('tempChart').getContext('2d'), 'Temperature (°C)', dataset, 'rgba(255, 99, 132, 1)');
+            humidityChart = createLineChart(document.getElementById('humidityChart').getContext('2d'), 'Humidity (%)', dataset, 'rgba(54, 162, 235, 1)');
+            pm25Chart = createLineChart(document.getElementById('pm25Chart').getContext('2d'), 'PM2.5 (µg/m³)', dataset, 'rgba(255, 206, 86, 1)');
+            pm10Chart = createLineChart(document.getElementById('pm10Chart').getContext('2d'), 'PM10 (µg/m³)', dataset, 'rgba(75, 192, 192, 1)');
+            pm1Chart = createLineChart(document.getElementById('pm1Chart').getContext('2d'), 'PM1 (µg/m³)', dataset, 'rgba(153, 102, 255, 1)');
+            uvChart = createLineChart(document.getElementById('uvChart').getContext('2d'), 'UV Index', dataset, 'rgba(255, 159, 64, 1)');
+          }
+        })
+    }
+    // Close modal
+    document.getElementById('modalCloseBtn').addEventListener('click', () => {
+      document.getElementById('sensorModal').classList.add('hidden');
+    });
+
   </script>
 </body>
 
