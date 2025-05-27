@@ -62,34 +62,34 @@ async function seedDatabase() {
     //         }
     //     }
     // 
-    //     environmentalData.forEach((data) => {
-    //         db.run(
-    //             `INSERT INTO EnvironmentalData (temperature, humidity, pm25, pm10, pm1, uv, sensorId) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    //             [data.temperature, data.humidity, data.pm25, data.pm10, data.pm1, data.uv, data.sensorId],
-    //             function (err) {
-    //                 if (err) {
-    //                     console.error('Error inserting EnvironmentalData:', err.message);
-    //                 } else {
-    //                     console.log(`Inserted EnvironmentalData with ID: ${this.lastID}`);
-    //                 }
-    //             }
-    //         );
-    //     });
-
-    healthData.forEach((data) => {
-
+    environmentalData.forEach((data) => {
         db.run(
-            `INSERT INTO HealthData (userId, sensorId,  heartRate, oxygenLevel, temperature) VALUES (?, ?, ?, ?, ?)`,
-            [data.userId, data.sensorId, data.heartRate, data.oxygenLevel, data.temperature],
+            `INSERT INTO EnvironmentalData (temperature, humidity, pm25, pm10, pm1, uv, sensorId) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [data.temperature, data.humidity, data.pm25, data.pm10, data.pm1, data.uv, data.sensorId],
             function (err) {
                 if (err) {
-                    console.error('Error inserting HealthData:', err.message);
+                    console.error('Error inserting EnvironmentalData:', err.message);
                 } else {
-                    console.log(`Inserted HealthData with ID: ${this.lastID}`);
+                    console.log(`Inserted EnvironmentalData with ID: ${this.lastID}`);
                 }
             }
         );
     });
+
+    //     healthData.forEach((data) => {
+    // 
+    //         db.run(
+    //             `INSERT INTO HealthData (userId, sensorId,  heartRate, oxygenLevel, temperature) VALUES (?, ?, ?, ?, ?)`,
+    //             [data.userId, data.sensorId, data.heartRate, data.oxygenLevel, data.temperature],
+    //             function (err) {
+    //                 if (err) {
+    //                     console.error('Error inserting HealthData:', err.message);
+    //                 } else {
+    //                     console.log(`Inserted HealthData with ID: ${this.lastID}`);
+    //                 }
+    //             }
+    //         );
+    //     });
 
     db.close((err) => {
         if (err) {

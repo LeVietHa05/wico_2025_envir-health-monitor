@@ -44,6 +44,23 @@ router.get('/:id', (req, res) => {
     });
 });
 
+// GET latest 10 environmental data points for a sensorId (public)
+router.get('/sensor/:sensorId', (req, res) => {
+    const sensorId = req.params.sensorId;
+    console.log(`Fetching latest 10 data points for sensorId: ${sensorId}`);
+    db.all(
+        'SELECT * FROM EnvironmentalData WHERE sensorId = ? ORDER BY timestamp DESC LIMIT 10',
+        [sensorId],
+        (err, rows) => {
+            if (err) {
+                console.error('Error fetching data:', err.message);
+                return res.status(500).json({ message: err.message });
+            }
+            res.json(rows.reverse()); // reverse to have oldest first
+        }
+    );
+});
+
 // POST new environmental data
 router.post('/', (req, res) => {
     const { temperature, humidity, pm25, pm10, pm1, uv, sensorId } = req.body;
