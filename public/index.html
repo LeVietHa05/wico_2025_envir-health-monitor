@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
@@ -13,36 +13,34 @@
     <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
       <h1 class="text-2xl font-bold">Environment & Health Monitor</h1>
       <div id="auth-links" class="flex space-x-4">
-        <a href="/auth.html" id="login-link" class="text-blue-600 hover:underline">Đăng nhập / Đăng ký</a>
-        <button id="logoutBtn" class="text-red-600 hover:underline hidden">Đăng xuất</button>
+        <a href="/auth.html" id="login-link" class="text-blue-600 hover:underline">Login / Register</a>
+        <button id="logoutBtn" class="text-red-600 hover:underline hidden">Logout</button>
       </div>
     </div>
   </header>
 
   <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
 
-
-    <!-- Dữ liệu môi trường -->
+    <!-- Environmental Data -->
     <section class="mb-8">
-      <h2 class="text-xl font-semibold mb-4">Dữ liệu môi trường mới nhất từ các cảm biến</h2>
+      <h2 class="text-xl font-semibold mb-4">Latest Environmental Data from Sensors</h2>
       <div id="environmental-data" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </section>
 
-    <!-- Dữ liệu sức khỏe -->
+    <!-- Health Data -->
     <section>
-      <h2 class="text-xl font-semibold mb-4">Dữ liệu sức khỏe của bạn </h2>
+      <h2 class="text-xl font-semibold mb-4">Your Health Data</h2>
       <div id="health-data" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </section>
 
-    <!-- Form Gán Sensor ID (chỉ hiển thị khi đăng nhập) -->
+    <!-- Sensor ID Assignment Form (only visible when logged in) -->
     <section id="assign-sensor-section" class="mb-8 hidden">
-      <h2 class="text-xl font-semibold mb-4">Gán Sensor ID</h2>
+      <h2 class="text-xl font-semibold mb-4">Assign Sensor ID</h2>
       <div class="bg-white p-6 rounded-lg shadow">
         <div class="space-y-4">
           <input id="sensor-id" type="text" placeholder="Sensor ID"
             class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <button id="assignSensorBtn" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Gán
-            Sensor</button>
+          <button id="assignSensorBtn" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Assign Sensor</button>
         </div>
       </div>
     </section>
@@ -51,7 +49,7 @@
   <div class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
-      <h2>Thông báo</h2>
+      <h2>Notification</h2>
       <p id="modal-message"></p>
     </div>
   </div>
@@ -63,8 +61,8 @@
   <script>
     const token = localStorage.getItem('token') || '';
 
-    // Hiển thị nút đăng xuất nếu đã đăng nhập
-    // Cập nhật giao diện dựa trên trạng thái đăng nhập
+    // Show logout button if logged in
+    // Update UI based on login status
     if (token) {
       document.getElementById('logoutBtn').classList.remove('hidden');
       document.getElementById('login-link').classList.add('hidden');
@@ -77,24 +75,24 @@
         const envDiv = document.getElementById('environmental-data');
         data.forEach(item => {
           envDiv.innerHTML += `
-            <div class="bg-white p-4 rounded-lg shadow *:m-1">  
+            <div class="bg-white p-4 rounded-lg shadow">
               <h3 class="font-semibold">Sensor: ${item.sensorId}</h3>
-              <p>Nhiệt độ: ${item.temperature}°C</p>
-              <p>Độ ẩm: ${item.humidity}%</p>
-              <p>PM2.5: ${item.pm25} µg/m³</p>
-              <p>PM10: ${item.pm10} µg/m³</p>
-              <p>PM1: ${item.pm1} µg/m³</p>
-              <p>UV: ${item.uv}</p>
-              <p class="text-sm text-gray-500">Thời gian: ${new Date(item.timestamp).toLocaleString()}</p>
+              <p>Temperature: <span class="${item.temperature >= 20 && item.temperature <= 28 ? 'text-green-500' : 'text-red-500'}">${item.temperature}</span>°C</p>
+              <p>Humidity: <span class="${item.humidity >= 30 && item.humidity <= 80 ? 'text-green-500' : 'text-red-500'}">${item.humidity}</span>%</p>
+              <p>PM2.5: <span class="${item.pm25 <= 25 ? 'text-green-500' : 'text-red-500'}">${item.pm25}</span> µg/m³</p>
+              <p>PM10: <span class="${item.pm10 <= 50 ? 'text-green-500' : 'text-red-500'}">${item.pm10}</span> µg/m³</p>
+              <p>PM1: <span class="${item.pm1 <= 15 ? 'text-green-500' : 'text-red-500'}">${item.pm1}</span> µg/m³</p>
+              <p>UV: <span class="${item.uv <= 5 ? 'text-green-500' : 'text-red-500'}">${item.uv}</span></p>
+              <p class="text-sm text-gray-500">Time: ${new Date(item.timestamp).toLocaleString()}</p>
             </div>
           `;
         });
       })
       .catch(err => {
-        document.getElementById('environmental-data').innerHTML = `<p class="text-red-600">Lỗi tải dữ liệu: ${err.message}</p>`;
+        document.getElementById('environmental-data').innerHTML = `<p class="text-red-600">Error loading data: ${err.message}</p>`;
       });
 
-    // Fetch dữ liệu sức khỏe
+    // Fetch health data
     if (token) {
       fetch('/api/health', {
         headers: { 'Authorization': `Bearer ${token}` },
@@ -103,24 +101,24 @@
           if (response.status === 401) {
             localStorage.removeItem('token');
             window.location.reload();
-            throw new Error('Vui lòng đăng nhập');
+            throw new Error('Please login');
           }
           return response.json();
         })
         .then(data => {
           const healthDiv = document.getElementById('health-data');
           if (data.length === 0) {
-            healthDiv.innerHTML = '<p class="text-gray-500">Không có dữ liệu sức khỏe</p>';
+            healthDiv.innerHTML = '<p class="text-gray-500">No health data available</p>';
             return;
           }
           data.forEach(item => {
             healthDiv.innerHTML += `
-              <div class="bg-white p-4 rounded-lg shadow *:m-1">
-                <h3 class="font-semibold">User: ${item.userId}</h3>
-                <p>Nhịp tim: ${item.heartRate} bpm</p>
-                <p>Oxy: ${item.oxygenLevel}%</p>
-                <p>Nhiệt độ: ${item.temperature}°C</p>
-                <p class="text-sm text-gray-500">Thời gian: ${new Date(item.timestamp).toLocaleString()}</p>
+              <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="font-semibold">User: ${item.email}</h3>
+                <p>Heart Rate: <span class="${item.heartRate >= 60 && item.heartRate <= 100 ? 'text-green-500' : 'text-red-500'}">${item.heartRate}</span> bpm</p>
+                <p>Oxygen: <span class="${item.oxygenLevel >= 95 && item.oxygenLevel <= 100 ? 'text-green-500' : 'text-red-500'}">${item.oxygenLevel}</span>%</p>
+                <p>Temperature: <span class="${item.temperature >= 35 && item.temperature <= 38 ? 'text-green-500' : 'text-red-500'}">${item.temperature}</span>°C</p>
+                <p class="text-sm text-gray-500">Time: ${new Date(item.timestamp).toLocaleString()}</p>
               </div>
             `;
           });
@@ -129,7 +127,7 @@
           document.getElementById('health-data').innerHTML = `<p class="text-red-600">${err.message}</p>`;
         });
     } else {
-      document.getElementById('health-data').innerHTML = '<p class="text-gray-500">Vui lòng đăng nhập để xem dữ liệu sức khỏe</p>';
+      document.getElementById('health-data').innerHTML = '<p class="text-gray-500">Please login to view health data</p>';
     }
   </script>
 </body>

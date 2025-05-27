@@ -40,7 +40,7 @@ async function register() {
         });
         const data = await response.json();
         showModal(data.message);
-    } catch (err) {
+    } catch (error) {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.error("Error during registration:", errorCode, errorMessage);
@@ -77,7 +77,7 @@ async function login() {
         } else {
             showModal(data.message);
         }
-    } catch (err) {
+    } catch (error) {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.error("Error during login:", errorCode, errorMessage);

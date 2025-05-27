@@ -6,7 +6,7 @@ const { authMiddleware, adminMiddleware } = require('../middleware/auth');
 // GET health data (authenticated, user-specific or admin)
 router.get('/', authMiddleware, (req, res) => {
     const query = req.user.role === 'admin'
-        ? 'SELECT * FROM HealthData'
+        ? 'SELECT h.*, u.email, u.sensorId FROM HealthData h JOIN Users u ON h.userId = u.id '
         : 'SELECT * FROM HealthData WHERE userId = ?';
     const params = req.user.role === 'admin' ? [] : [req.user.id];
     db.all(query, params, (err, rows) => {

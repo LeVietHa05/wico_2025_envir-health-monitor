@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập / Đăng ký</title>
+    <title>Login / Register</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
@@ -14,70 +14,60 @@
         <h1 class="text-2xl font-bold text-center mb-6">Environment & Health Monitor</h1>
 
         <div id="auth-links" class="flex justify-between mb-4">
-            <a href="/" class="text-blue-600 hover:underline">Trang chủ</a>
-            <button id="logout-link" class="text-red-600 hover:underline hidden" onclick="logout()">Đăng xuất</button>
+            <a href="/" class="text-blue-600 hover:underline">Back to Home</a>
+            <button id="logout-link" class="text-red-600 hover:underline hidden" onclick="logout()">Logout</button>
         </div>
 
-        <!-- Form Đăng ký -->
+        <!-- Register Form -->
         <div id="register-form" class="form-section hidden">
-            <h2 class="text-xl font-semibold mb-4">Đăng ký</h2>
+            <h2 class="text-xl font-semibold mb-4">Register</h2>
             <div class="space-y-4">
                 <input id="register-email" type="email" placeholder="Email"
                     class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <input id="register-password" type="password" placeholder="Mật khẩu"
+                <input id="register-password" type="password" placeholder="Password"
                     class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <button id="registerBtn" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Đăng
-                    ký</button>
+                <button id="registerBtn" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Register</button>
             </div>
             <div class="mt-4 text-center">
-                <button onclick="showForm('login-form')" class="text-blue-600 hover:underline">Đã có tài khoản? Đăng
-                    nhập</button>
+                <button onclick="showForm('login-form')" class="text-blue-600 hover:underline">Already have an account? Login</button>
             </div>
         </div>
 
-        <!-- Form Đăng nhập -->
+        <!-- Login Form -->
         <div id="login-form" class="form-section">
-            <h2 class="text-xl font-semibold mb-4">Đăng nhập</h2>
+            <h2 class="text-xl font-semibold mb-4">Login</h2>
             <div class="space-y-4">
                 <input id="login-email" type="email" placeholder="Email"
                     class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <input id="login-password" type="password" placeholder="Mật khẩu"
+                <input id="login-password" type="password" placeholder="Password"
                     class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <button id="loginBtn" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Đăng
-                    nhập</button>
+                <button id="loginBtn" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Login</button>
             </div>
             <div class="mt-4 text-center">
-                <button onclick="showForm('register-form')" class="text-blue-600 hover:underline">Chưa có tài khoản?
-                    Đăng
-                    ký</button>
+                <button onclick="showForm('register-form')" class="text-blue-600 hover:underline">Don't have an account? Register</button>
                 <br>
-                <button onclick="showForm('forgot-password-form')" class="text-blue-600 hover:underline">Quên mật
-                    khẩu?</button>
+                <button onclick="showForm('forgot-password-form')" class="text-blue-600 hover:underline">Forgot password?</button>
             </div>
         </div>
 
-        <!-- Form Quên mật khẩu -->
+        <!-- Forgot Password Form -->
         <div id="forgot-password-form" class="form-section hidden">
-            <h2 class="text-xl font-semibold mb-4">Quên mật khẩu</h2>
+            <h2 class="text-xl font-semibold mb-4">Forgot Password</h2>
             <div class="space-y-4">
                 <input id="forgot-email" type="email" placeholder="Email"
                     class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <button id="forgotPasswordBtn" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Gửi
-                    Email
-                    Reset</button>
+                <button id="forgotPasswordBtn" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Send Reset Email</button>
             </div>
             <div class="mt-4 text-center">
-                <button onclick="showForm('login-form')" class="text-blue-600 hover:underline">Quay lại đăng
-                    nhập</button>
+                <button onclick="showForm('login-form')" class="text-blue-600 hover:underline">Back to login</button>
             </div>
         </div>
-
 
     </div>
     <div class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Thông báo</h2>
+            <h2>Notification</h2>
             <p id="modal-message"></p>
         </div>
     </div>

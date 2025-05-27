@@ -102,14 +102,15 @@ router.post('/assign-sensor', authMiddleware, (req, res) => {
             if (this.changes === 0) {
                 return res.status(404).json({ message: 'User not found' });
             }
-            res.json({ message: 'Gán sensor thành công' });
+            res.json({ message: 'Sensor assigned successfully' });
         }
     );
 });
 
+// Logout route
 router.post('/logout', authMiddleware, (req, res) => {
     try {
-        // Vì token được lưu ở client, server chỉ cần xác nhận yêu cầu
+        // Since token is stored on client, server just confirms the request
         res.json({ message: 'Logged out successfully' });
     } catch (err) {
         res.status(500).json({ message: 'Error logging out' });
