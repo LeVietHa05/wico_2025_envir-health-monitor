@@ -37,7 +37,7 @@ router.get('/user/:userId', authMiddleware, (req, res) => {
     if (req.user.role !== 'admin' && req.user.id !== req.params.userId) {
         return res.status(403).json({ message: 'Access denied' });
     }
-    db.get('SELECT * FROM HealthData WHERE userId = ? LIMIT 10',
+    db.all('SELECT * FROM HealthData WHERE userId = ? LIMIT 10',
         [req.params.userId],
         (err, row) => {
             if (err) {
@@ -47,7 +47,7 @@ router.get('/user/:userId', authMiddleware, (req, res) => {
                 return res.status(404).json({ message: 'Data not found' });
             }
             
-            res.json(row.reverse()); // reverse to have oldest first
+            res.json(row); // reverse to have oldest first
         });
 });
 

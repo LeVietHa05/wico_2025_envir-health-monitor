@@ -50,7 +50,7 @@
   <!-- Modal for sensor charts -->
   <div id="sensorModal" class="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center hidden z-50">
     <div class="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto relative  shadow-lg/30">
-      <button id="modalCloseBtn"
+      <button id="modalSensorCloseBtn"
         class="absolute top-2 right-2 text-gray-600 hover:text-gray-900 text-2xl font-bold">&times;</button>
       <h2 class="text-xl font-semibold mb-4">Sensor Data Charts</h2>
       <div id="chartsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6 *:shadow-lg">
@@ -83,6 +83,27 @@
   </div>
 
   <!-- modal for Health chart -->
+  <div id="healthModal" class="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto relative  shadow-lg/30">
+      <button id="modalHealthCloseBtn"
+        class="absolute top-2 right-2 text-gray-600 hover:text-gray-900 text-2xl font-bold">&times;</button>
+      <h2 class="text-xl font-semibold mb-4">Health Data Charts</h2>
+      <div id="chartsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6 *:shadow-lg">
+        <div>
+          <h3 class="font-semibold mb-2">Heart Rate (bpm)</h3>
+          <canvas id="heartRateChart"></canvas>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-2">Oxygen (%)</h3>
+          <canvas id="oxygenChart"></canvas>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-2">Temperature (°C)</h3>
+          <canvas id="healthTempChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal for notification -->
   <div class="modal">
@@ -156,16 +177,21 @@
             healthDiv.innerHTML = '<p class="text-gray-500">No health data available</p>';
             return;
           }
+          const healthData = document.getElementById('health-data');
           data.forEach(item => {
+            const healthDiv = document.createElement('div')
+            healthDiv.classList = 'bg-white p-4 rounded-lg shadow *:m-1 *:shadow'
             healthDiv.innerHTML += `
-              <div class="bg-white p-4 rounded-lg shadow *:m-1 *:shadow">
-                <h3 class="font-semibold">User: ${item.email}</h3>
-                <p>Heart Rate: <span class="${item.heartRate >= 60 && item.heartRate <= 100 ? 'text-green-500' : 'text-red-500'}">${item.heartRate}</span> bpm</p>
-                <p>Oxygen: <span class="${item.oxygenLevel >= 95 && item.oxygenLevel <= 100 ? 'text-green-500' : 'text-red-500'}">${item.oxygenLevel}</span>%</p>
-                <p>Temperature: <span class="${item.temperature >= 35 && item.temperature <= 38 ? 'text-green-500' : 'text-red-500'}">${item.temperature}</span>°C</p>
-                <p class="text-sm text-gray-500">Time: ${new Date(item.timestamp).toLocaleString()}</p>
-              </div>
+              <h3 class="font-semibold">User: ${item.email}</h3>
+              <p>Heart Rate: <span class="${item.heartRate >= 60 && item.heartRate <= 100 ? 'text-green-500' : 'text-red-500'}">${item.heartRate}</span> bpm</p>
+              <p>Oxygen: <span class="${item.oxygenLevel >= 95 && item.oxygenLevel <= 100 ? 'text-green-500' : 'text-red-500'}">${item.oxygenLevel}</span>%</p>
+              <p>Temperature: <span class="${item.temperature >= 35 && item.temperature <= 38 ? 'text-green-500' : 'text-red-500'}">${item.temperature}</span>°C</p>
+              <p class="text-sm text-gray-500">Time: ${new Date(item.timestamp).toLocaleString()}</p>
             `;
+            healthDiv.addEventListener("click", () => {
+              openHealthModal(item.userId);
+            })
+            healthData.appendChild(healthDiv);
           });
         })
         .catch(err => {
@@ -195,11 +221,28 @@
         options: {
           responsive: true,
           scales: {
-            x: { display: true, title: { display: true, text: 'Latest 10 readings' } },
+            x: { display: true, title: { display: true, text: 'Latest readings' } },
             y: { display: true, beginAtZero: true }
           }
         }
       });
+    }
+
+    //Open modal and render charts for an user
+    function openHealthModal(userID) {
+      const modal = document.getElementById('healthModal');
+      modal.classList.remove('hidden')
+
+      if (!token) {
+        document.getElementById('healthChart').innerHTML = '<p class="text-gray-500">Please login to view health data</p>';
+      }
+
+      fetch(`/api/health/user/${userID}`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      }).then(res => res.json())
+        .then(data => {
+          console.log(data);
+        })
     }
     // Open modal and render charts for a sensor
     function openSensorModal(sensorId) {
@@ -241,8 +284,13 @@
         })
     }
     // Close modal
-    document.getElementById('modalCloseBtn').addEventListener('click', () => {
+    document.getElementById('modalSensorCloseBtn').addEventListener('click', () => {
       document.getElementById('sensorModal').classList.add('hidden');
+    });
+
+    // Close modal
+    document.getElementById('modalHealthCloseBtn').addEventListener('click', () => {
+      document.getElementById('healthModal').classList.add('hidden');
     });
 
   </script>
