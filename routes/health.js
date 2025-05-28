@@ -17,6 +17,27 @@ router.get('/', authMiddleware, (req, res) => {
     });
 });
 
+//GET latest health data for each user aslo join user email and user sensorid (authenticated, admin)
+router.get('/latest', authMiddleware, (req, res) => {
+    const query = `
+    SELECT h1.*, u.email, u.sensorId
+    FROM HealthData h1
+    INNER JOIN (
+        SELECT userId, MAX(timestamp) as maxTimestamp
+        FROM HealthData
+        GROUP BY userId
+        ) h2 ON h1.userId = h2.userId AND h1.timestamp = h2.maxTimestamp
+    JOIN Users u ON h1.userId = u.id
+    `;
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ message: err.message });
+        }
+        res.json(rows);
+    }
+    );
+});
+
 // GET one health data by ID (authenticated, user-specific or admin)
 router.get('/:id', authMiddleware, (req, res) => {
     db.get('SELECT * FROM HealthData WHERE id = ?', [req.params.id], (err, row) => {
@@ -46,7 +67,7 @@ router.get('/user/:userId', authMiddleware, (req, res) => {
             if (!row) {
                 return res.status(404).json({ message: 'Data not found' });
             }
-            
+
             res.json(row); // reverse to have oldest first
         });
 });
