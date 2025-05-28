@@ -135,8 +135,9 @@
         const envDiv = document.getElementById('environmental-data');
         data.forEach(item => {
           const sensorDiv = document.createElement('div');
-          sensorDiv.className = 'bg-white *:m-1 p-4 rounded-lg shadow cursor-pointer *:hover:scale-110 *:shadow *:hover:bg-green-300 *:transition';
+          sensorDiv.className = 'relative group bg-white *:m-1 p-4 rounded-lg shadow cursor-pointer  *:shadow  *:transition';
           sensorDiv.innerHTML = `
+            <div class=" group-hover:opacity-100 opacity-0 absolute inset-x-0 bottom-0 h-16 flex justify-center items-center bg-blue-100 backdrop-blur-xs">View more</div>
             <h3 class="font-semibold">Sensor: ${item.sensorId}</h3>
             <p>Temperature: <span class="${item.temperature >= 20 && item.temperature <= 28 ? 'text-green-500' : 'text-red-500'}">${item.temperature}</span>°C</p>
             <p>Humidity: <span class="${item.humidity >= 30 && item.humidity <= 80 ? 'text-green-500' : 'text-red-500'}">${item.humidity}</span>%</p>
@@ -180,8 +181,9 @@
           const healthData = document.getElementById('health-data');
           data.forEach(item => {
             const healthDiv = document.createElement('div')
-            healthDiv.classList = 'bg-white p-4 rounded-lg shadow *:m-1 *:shadow'
+            healthDiv.classList = 'bg-white p-4 rounded-lg shadow *:m-1 *:shadow relative group '
             healthDiv.innerHTML += `
+              <div class=" group-hover:opacity-100 opacity-0 absolute inset-x-0 bottom-0 h-16 flex justify-center items-center bg-blue-100 backdrop-blur-xs">View more</div>
               <h3 class="font-semibold">User: ${item.email}</h3>
               <p>Heart Rate: <span class="${item.heartRate >= 60 && item.heartRate <= 100 ? 'text-green-500' : 'text-red-500'}">${item.heartRate}</span> bpm</p>
               <p>Oxygen: <span class="${item.oxygenLevel >= 95 && item.oxygenLevel <= 100 ? 'text-green-500' : 'text-red-500'}">${item.oxygenLevel}</span>%</p>
@@ -203,6 +205,7 @@
 
     // Chart instances
     let tempChart, humidityChart, pm25Chart, pm10Chart, pm1Chart, uvChart;
+    let healthTempChart, heartRateChart, oxygenLevelChart;
 
     // Function to create a line chart
     function createLineChart(ctx, label, data, borderColor) {
@@ -240,8 +243,23 @@
       fetch(`/api/health/user/${userID}`, {
         headers: { 'Authorization': `Bearer ${token}` },
       }).then(res => res.json())
-        .then(data => {
-          console.log(data);
+        .then(datas => {
+          console.log(datas);
+
+          const charts = ['heartRate', 'oxygenLevel', 'temperature'];
+          let dataset = {}
+          for (chart of charts) {
+            dataset[chart] = {};
+            dataset[chart].data = datas.map(data => data[chart])
+            dataset[chart].labels = datas.map(data => data.timestamp)
+          }
+          if (heartRateChart) heartRateChart.destroy();
+          if (oxygenLevelChart) oxygenLevelChart.destroy();
+          if (healthTempChart) healthTempChart.destroy();
+
+          heartRateChart = createLineChart(document.getElementById("heartRateChart").getContext('2d'), "Heart Rate (BPM)", dataset.heartRate, 'rgba(255, 99, 132, 1)');
+          oxygenLevelChart = createLineChart(document.getElementById("oxygenChart").getContext('2d'), "Oxygen Level (%)", dataset.oxygenLevel, 'rgba(54, 162, 235, 1)');
+          healthTempChart = createLineChart(document.getElementById("healthTempChart").getContext('2d'), "Body Temperature (°C)", dataset.temperature, 'rgba(255, 99, 132, 1)');
         })
     }
     // Open modal and render charts for a sensor
