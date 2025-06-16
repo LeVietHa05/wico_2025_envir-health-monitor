@@ -51,6 +51,11 @@ io.on("connection", (socket) => {
     lastPong = Date.now();
     console.log("[INFO] new connection: [" + socket.id + "]");
     socket.on("message", (data) => {
+        if (data.indexOf('test') >= 0) {
+            console.log("test");
+            socket.broadcast.emit("message", data);
+            return
+        };
         sensorId = data.sensorId ? data.sensorId : "web";
         if (sensorId == "esp32") deviceStatus = "online";
         console.log(`message from ${data.sensorId ? data.sensorId : 'web'} via socket id: ${socket.id} on topic message`);
@@ -101,7 +106,7 @@ io.on("connection", (socket) => {
         if (data.aqi == 0) {
             fetch(api_endpoint).then(res => res.json())
                 .then(res => {
-                    data.qai = res.data.aqi
+                    data.aqi = res.data.aqi
                 })
         }
 

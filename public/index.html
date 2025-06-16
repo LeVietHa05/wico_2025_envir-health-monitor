@@ -24,19 +24,19 @@
     <!-- Environmental Data -->
     <section class="mb-8">
       <h2 class="text-xl font-semibold mb-4">Latest Environmental Data from Sensors</h2>
-      <div id="environmental-data" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      <div id="environmental-data" class="grid justify-center grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"></div>
     </section>
 
     <!-- Health Data -->
     <section>
       <h2 class="text-xl font-semibold mb-4">Your Health Data</h2>
-      <div id="health-data" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      <div id="health-data" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"></div>
     </section>
 
     <!-- Sensor ID Assignment Form (only visible when logged in) -->
-    <section id="assign-sensor-section" class="mb-8 hidden">
+    <section id="assign-sensor-section" class="my-8 hidden w-96">
       <h2 class="text-xl font-semibold mb-4">Assign Sensor ID</h2>
-      <div class="bg-white p-6 rounded-lg shadow">
+      <div class="bg-white p-6 rounded-lg shadow-lg">
         <div class="space-y-4">
           <input id="sensor-id" type="text" placeholder="Sensor ID"
             class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
@@ -118,6 +118,24 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script type="module" src="javascripts/authscript.js"></script>
   <script src="javascripts/normalscript.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    socket.on("connect", () => {
+      console.log(socket.connected); // true
+    });
+
+    socket.on("message", (data) => {
+      if (data.indexOf('test') >= 0) {
+        console.log("test done");
+        return
+      };
+    });
+
+    socket.on("disconnect", () => {
+      console.log(socket.connected); // false
+    });
+  </script>
   <script>
     const token = localStorage.getItem('token') || '';
 
@@ -135,17 +153,19 @@
         const envDiv = document.getElementById('environmental-data');
         data.forEach(item => {
           const sensorDiv = document.createElement('div');
-          sensorDiv.className = 'relative group bg-white *:m-1 p-4 rounded-lg shadow cursor-pointer  *:shadow  *:transition';
+          sensorDiv.className = 'relative group bg-white p-4 rounded-lg shadow-lg cursor-pointer  *:transition';
           sensorDiv.innerHTML = `
-            <div class=" group-hover:opacity-100 opacity-0 absolute inset-x-0 bottom-0 h-16 flex justify-center items-center bg-blue-100 backdrop-blur-xs">View more</div>
+            <div class=" group-hover:opacity-100 opacity-0 absolute inset-x-0 bottom-0 h-full flex justify-center items-center bg-blue-100 rounded">View more</div>
             <h3 class="font-semibold">Sensor: ${item.sensorId}</h3>
-            <p>Temperature: <span class="${item.temperature >= 20 && item.temperature <= 28 ? 'text-green-500' : 'text-red-500'}">${item.temperature}</span>°C</p>
-            <p>Humidity: <span class="${item.humidity >= 30 && item.humidity <= 80 ? 'text-green-500' : 'text-red-500'}">${item.humidity}</span>%</p>
-            <p>PM2.5: <span class="${item.pm25 <= 25 ? 'text-green-500' : 'text-red-500'}">${item.pm25}</span> µg/m³</p>
-            <p>PM10: <span class="${item.pm10 <= 50 ? 'text-green-500' : 'text-red-500'}">${item.pm10}</span> µg/m³</p>
-            <p>PM1: <span class="${item.pm1 <= 15 ? 'text-green-500' : 'text-red-500'}">${item.pm1}</span> µg/m³</p>
-            <p>UV: <span class="${item.uv <= 5 ? 'text-green-500' : 'text-red-500'}">${item.uv}</span></p>
-            <p class="text-sm text-gray-500">Time: ${new Date(item.timestamp).toLocaleString()}</p>
+            <div class="group-hover:h-fit group-hover:overflow-auto group-hover:opacity-100 opacity-0 h-0 overflow-hidden w-full absolute top-full left-0 z-10 bg-white backdrop-blur-xs shadow-lg rounded">
+              <p>Temperature: <span class="${item.temperature >= 18 && item.temperature <= 28 ? 'text-green-500' : 'text-red-500'}">${item.temperature}</span>°C</p>
+              <p>Humidity: <span class="${item.humidity >= 30 && item.humidity <= 70 ? 'text-green-500' : 'text-red-500'}">${item.humidity}</span>%</p>
+              <p>PM2.5: <span class="${item.pm25 <= 35 ? 'text-green-500' : 'text-red-500'}">${item.pm25}</span> µg/m³</p>
+              <p>PM10: <span class="${item.pm10 <= 50 ? 'text-green-500' : 'text-red-500'}">${item.pm10}</span> µg/m³</p>
+              <p>PM1: <span class="${item.pm1 <= 35 ? 'text-green-500' : 'text-red-500'}">${item.pm1}</span> µg/m³</p>
+              <p>UV: <span class="${item.uv <= 5 ? 'text-green-500' : 'text-red-500'}">${item.uv}</span></p>
+              <p class="text-sm text-gray-500">Time: ${new Date(item.timestamp).toLocaleString()}</p>
+            </div>
           `;
 
           sensorDiv.addEventListener('click', () => {
@@ -161,7 +181,7 @@
 
     // Fetch health data
     if (token) {
-      fetch('/api/health', {
+      fetch('/api/health/latest', {
         headers: { 'Authorization': `Bearer ${token}` },
       })
         .then(response => {
@@ -173,6 +193,7 @@
           return response.json();
         })
         .then(data => {
+          console.log(data)
           const healthDiv = document.getElementById('health-data');
           if (data.length === 0) {
             healthDiv.innerHTML = '<p class="text-gray-500">No health data available</p>';
@@ -181,14 +202,17 @@
           const healthData = document.getElementById('health-data');
           data.forEach(item => {
             const healthDiv = document.createElement('div')
-            healthDiv.classList = 'bg-white p-4 rounded-lg shadow *:m-1 *:shadow relative group '
+            healthDiv.classList = 'bg-white p-4 rounded-lg relative group cursor-pointer shadow-lg'
             healthDiv.innerHTML += `
-              <div class=" group-hover:opacity-100 opacity-0 absolute inset-x-0 bottom-0 h-16 flex justify-center items-center bg-blue-100 backdrop-blur-xs">View more</div>
+              <div class=" group-hover:opacity-100 opacity-0 absolute inset-x-0 bottom-0 h-full flex justify-center items-center bg-blue-100 rounded">View more</div>
               <h3 class="font-semibold">User: ${item.email}</h3>
-              <p>Heart Rate: <span class="${item.heartRate >= 60 && item.heartRate <= 100 ? 'text-green-500' : 'text-red-500'}">${item.heartRate}</span> bpm</p>
-              <p>Oxygen: <span class="${item.oxygenLevel >= 95 && item.oxygenLevel <= 100 ? 'text-green-500' : 'text-red-500'}">${item.oxygenLevel}</span>%</p>
-              <p>Temperature: <span class="${item.temperature >= 35 && item.temperature <= 38 ? 'text-green-500' : 'text-red-500'}">${item.temperature}</span>°C</p>
-              <p class="text-sm text-gray-500">Time: ${new Date(item.timestamp).toLocaleString()}</p>
+              <div>${item.sensorId}</div>
+              <div class="group-hover:h-fit group-hover:overflow-auto group-hover:opacity-100 opacity-0 h-0 overflow-hidden w-full absolute top-full left-0 z-10 bg-white backdrop-blur-xs shadow-lg rounded">
+                <p>Heart Rate: <span class="${item.heartRate >= 60 && item.heartRate <= 100 ? 'text-green-500' : 'text-red-500'}">${item.heartRate}</span> bpm</p>
+                <p>Oxygen: <span class="${item.oxygenLevel >= 95 && item.oxygenLevel <= 100 ? 'text-green-500' : 'text-red-500'}">${item.oxygenLevel}</span>%</p>
+                <p>Temperature: <span class="${item.temperature >= 35 && item.temperature <= 38 ? 'text-green-500' : 'text-red-500'}">${item.temperature}</span>°C</p>
+                <p class="text-sm text-gray-500">Time: ${new Date(item.timestamp).toLocaleString()}</p>
+              </div>
             `;
             healthDiv.addEventListener("click", () => {
               openHealthModal(item.userId);
