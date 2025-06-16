@@ -32,7 +32,7 @@ router.get('/latest', (req, res) => {
 
 // GET one environmental data by ID (public)
 router.get('/:id', (req, res) => {
-    db.get('SELECT * FROM EnvironmentalData WHERE id = ?', [req.params.id], (err, row) => {
+    db.get('SELECT * FROM EnvironmentalData WHERE id = ? LIMIT 10', [req.params.id], (err, row) => {
         if (err) {
             return res.status(500).json({ message: err.message });
         }

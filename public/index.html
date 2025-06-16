@@ -9,7 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gradient-to-r from-[#E0F7FA] to-[#E8F5E9]">
   <header class="bg-white shadow">
     <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
       <h1 class="text-2xl font-bold">Environment & Health Monitor</h1>
@@ -22,10 +22,164 @@
 
   <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
     <!-- Environmental Data -->
-    <section class="mb-8">
+    <section class="">
       <h2 class="text-xl font-semibold mb-4">Latest Environmental Data from Sensors</h2>
       <div id="environmental-data" class="grid justify-center grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"></div>
     </section>
+
+    <section class="py-4 bg-gradient-to-r from-[#E0F7FA] to-[#E8F5E9]">
+      <div class="bg-white rounded-2xl shadow-md flex overflow-hidden sm:flex-row flex-col">
+        <!-- Left -->
+        <div class="sm:sm:w-[15%] w-full w-full p-4 flex flex-col justify-center">
+          <h3 class="text-lg font-semibold text-blue-700">Temperature</h3>
+          <p class="text-3xl font-bold text-red-500 mt-2"><span id="tempIndex">28</span>°C</p>
+          <p class="text-sm text-yellow-600 mt-2">Slightly above normal</p>
+        </div>
+
+        <!-- Middle -->
+        <div class="sm:sm:w-[70%] w-full w-full  p-4">
+          <div class="w-full h-48 flex items-center justify-center text-gray-400">
+            <canvas id="tempChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Right -->
+        <div class="sm:sm:w-[15%] w-full w-[30%]  p-4 flex flex-col justify-center border-l border-gray-200">
+          <div class="flex justify-between text-sm text-gray-600 mb-2">
+            <span class="font-medium">Max</span>
+            <span>32°C</span>
+          </div>
+          <div class="flex justify-between text-sm text-gray-600">
+            <span class="font-medium">Min</span>
+            <span>18°C</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-4 bg-gradient-to-r from-[#E0F7FA] to-[#E8F5E9]">
+      <div class="bg-white rounded-2xl shadow-md flex overflow-hidden sm:flex-row flex-col">
+        <!-- Left -->
+        <div class="sm:w-[15%] w-full p-4 flex flex-col justify-center">
+          <h3 class="text-lg font-semibold text-green-700">Humidity</h3>
+          <p class="text-3xl font-bold text-blue-500 mt-2"><span id="humiIndex">65</span>%</p>
+          <p class="text-sm text-green-600 mt-2">Comfortable</p>
+        </div>
+
+        <!-- Middle -->
+        <div class="sm:w-[70%] w-full p-4">
+          <div class="w-full h-48 flex items-center justify-center text-gray-400">
+            <canvas id="humidityChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Right -->
+        <div class="sm:w-[15%] w-full p-4 flex flex-col justify-center border-l border-gray-200">
+          <div class="flex justify-between text-sm text-gray-600 mb-2">
+            <span class="font-medium">Max</span>
+            <span>80%</span>
+          </div>
+          <div class="flex justify-between text-sm text-gray-600">
+            <span class="font-medium">Min</span>
+            <span>45%</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-4 bg-gradient-to-r from-[#E0F7FA] to-[#E8F5E9]">
+      <div class="bg-white rounded-2xl shadow-md flex overflow-hidden sm:flex-row flex-col">
+        <!-- Left -->
+        <div class="sm:w-[15%] w-full p-4 flex flex-col justify-center">
+          <h3 class="text-lg font-semibold text-purple-700">PM2.5</h3>
+          <p class="text-3xl font-bold text-purple-600 mt-2"><span id="pm25Index">45</span> µg/m³</p>
+          <p class="text-sm text-red-600 mt-2">Unhealthy for sensitive groups</p>
+        </div>
+
+        <!-- Middle -->
+        <div class="sm:w-[70%] w-full p-4">
+          <div class="w-full h-48 flex items-center justify-center text-gray-400">
+            <canvas id="pm25Chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Right -->
+        <div class="sm:w-[15%] w-full p-4 flex flex-col justify-center border-l border-gray-200">
+          <div class="flex justify-between text-sm text-gray-600 mb-2">
+            <span class="font-medium">Max</span>
+            <span>60</span>
+          </div>
+          <div class="flex justify-between text-sm text-gray-600">
+            <span class="font-medium">Min</span>
+            <span>25</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-4 bg-gradient-to-r from-[#E0F7FA] to-[#E8F5E9]">
+      <div class="bg-white rounded-2xl shadow-md flex overflow-hidden sm:flex-row flex-col">
+        <!-- Left -->
+        <div class="sm:w-[15%] w-full p-4 flex flex-col justify-center">
+          <h3 class="text-lg font-semibold text-yellow-700">UV Index</h3>
+          <p class="text-3xl font-bold text-orange-500 mt-2" id="uvIndex">7</p>
+          <p class="text-sm text-orange-600 mt-2">High - Use protection</p>
+        </div>
+
+        <!-- Middle -->
+        <div class="sm:w-[70%] w-full p-4">
+          <div class="w-full h-48 flex items-center justify-center text-gray-400">
+            <canvas id="uvChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Right -->
+        <div class="sm:w-[15%] w-full p-4 flex flex-col justify-center border-l border-gray-200">
+          <div class="flex justify-between text-sm text-gray-600 mb-2">
+            <span class="font-medium">Max</span>
+            <span>9</span>
+          </div>
+          <div class="flex justify-between text-sm text-gray-600">
+            <span class="font-medium">Min</span>
+            <span>3</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-4 bg-gradient-to-r from-[#E0F7FA] to-[#E8F5E9]">
+      <div class="bg-white rounded-2xl shadow-md flex overflow-hidden sm:flex-row flex-col">
+        <!-- Left -->
+        <div class="sm:w-[15%] w-full p-4 flex flex-col justify-center">
+          <h3 class="text-lg font-semibold text-gray-800">AQI</h3>
+          <p class="text-3xl font-bold text-red-500 mt-2" id="aqiIndex">120</p>
+          <p class="text-sm text-red-600 mt-2">Unhealthy for sensitive groups</p>
+        </div>
+
+        <!-- Middle -->
+        <div class="sm:w-[70%] w-full p-4">
+          <div class="w-full h-48 flex items-center justify-center text-gray-400">
+            <canvas id="pm10Chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Right -->
+        <div class="sm:w-[15%] w-full p-4 flex flex-col justify-center border-l border-gray-200">
+          <div class="flex justify-between text-sm text-gray-600 mb-2">
+            <span class="font-medium">Max</span>
+            <span>150</span>
+          </div>
+          <div class="flex justify-between text-sm text-gray-600">
+            <span class="font-medium">Min</span>
+            <span>80</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+
 
     <!-- Health Data -->
     <section>
@@ -47,6 +201,7 @@
     </section>
   </main>
 
+  //TODO: xoa het dong nay di
   <!-- Modal for sensor charts -->
   <div id="sensorModal" class="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center hidden z-50">
     <div class="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto relative  shadow-lg/30">
@@ -56,7 +211,7 @@
       <div id="chartsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6 *:shadow-lg">
         <div>
           <h3 class="font-semibold mb-2">Temperature (°C)</h3>
-          <canvas id="tempChart"></canvas>
+
         </div>
         <div>
           <h3 class="font-semibold mb-2">Humidity (%)</h3>
@@ -82,6 +237,7 @@
     </div>
   </div>
 
+  //TODO: xoa het dong nay di
   <!-- modal for Health chart -->
   <div id="healthModal" class="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center hidden z-50">
     <div class="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto relative  shadow-lg/30">
@@ -150,30 +306,40 @@
     fetch('/api/environmental/latest')
       .then(response => response.json())
       .then(data => {
-        const envDiv = document.getElementById('environmental-data');
-        data.forEach(item => {
-          const sensorDiv = document.createElement('div');
-          sensorDiv.className = 'relative group bg-white p-4 rounded-lg shadow-lg cursor-pointer  *:transition';
-          sensorDiv.innerHTML = `
-            <div class=" group-hover:opacity-100 opacity-0 absolute inset-x-0 bottom-0 h-full flex justify-center items-center bg-blue-100 rounded">View more</div>
-            <h3 class="font-semibold">Sensor: ${item.sensorId}</h3>
-            <div class="group-hover:h-fit group-hover:overflow-auto group-hover:opacity-100 opacity-0 h-0 overflow-hidden w-full absolute top-full left-0 z-10 bg-white backdrop-blur-xs shadow-lg rounded">
-              <p>Temperature: <span class="${item.temperature >= 18 && item.temperature <= 28 ? 'text-green-500' : 'text-red-500'}">${item.temperature}</span>°C</p>
-              <p>Humidity: <span class="${item.humidity >= 30 && item.humidity <= 70 ? 'text-green-500' : 'text-red-500'}">${item.humidity}</span>%</p>
-              <p>PM2.5: <span class="${item.pm25 <= 35 ? 'text-green-500' : 'text-red-500'}">${item.pm25}</span> µg/m³</p>
-              <p>PM10: <span class="${item.pm10 <= 50 ? 'text-green-500' : 'text-red-500'}">${item.pm10}</span> µg/m³</p>
-              <p>PM1: <span class="${item.pm1 <= 35 ? 'text-green-500' : 'text-red-500'}">${item.pm1}</span> µg/m³</p>
-              <p>UV: <span class="${item.uv <= 5 ? 'text-green-500' : 'text-red-500'}">${item.uv}</span></p>
-              <p class="text-sm text-gray-500">Time: ${new Date(item.timestamp).toLocaleString()}</p>
-            </div>
-          `;
+        console.log(data)
+        tempIndex.textContent = data[2].temperature;
+        humiIndex.textContent = data[2].humidity;
+        uvIndex.textContent = data[2].uv;
+        aqiIndex.textContent = data[2].pm10;
+        pm25Index.textContent = data[2].pm25;
 
-          sensorDiv.addEventListener('click', () => {
-            openSensorModal(item.sensorId);
-          });
+        // const envDiv = document.getElementById('environmental-data');
 
-          envDiv.appendChild(sensorDiv);
-        });
+        //         data.forEach(item => {
+        // 
+        //           //TODO: xoa het dong nay di
+        //           const sensorDiv = document.createElement('div');
+        //           sensorDiv.className = 'relative group bg-white p-4 rounded-lg shadow-lg cursor-pointer  *:transition';
+        //           sensorDiv.innerHTML = `
+        //             <div class=" group-hover:opacity-100 opacity-0 absolute inset-x-0 bottom-0 h-full flex justify-center items-center bg-blue-100 rounded">View more</div>
+        //             <h3 class="font-semibold">Sensor: ${item.sensorId}</h3>
+        //             <div class="group-hover:h-fit group-hover:overflow-auto group-hover:opacity-100 opacity-0 h-0 overflow-hidden w-full absolute top-full left-0 z-10 bg-white backdrop-blur-xs shadow-lg rounded">
+        //               <p>Temperature: <span class="${item.temperature >= 18 && item.temperature <= 28 ? 'text-green-500' : 'text-red-500'}">${item.temperature}</span>°C</p>
+        //               <p>Humidity: <span class="${item.humidity >= 30 && item.humidity <= 70 ? 'text-green-500' : 'text-red-500'}">${item.humidity}</span>%</p>
+        //               <p>PM2.5: <span class="${item.pm25 <= 35 ? 'text-green-500' : 'text-red-500'}">${item.pm25}</span> µg/m³</p>
+        //               <p>PM10: <span class="${item.pm10 <= 50 ? 'text-green-500' : 'text-red-500'}">${item.pm10}</span> µg/m³</p>
+        //               <p>PM1: <span class="${item.pm1 <= 35 ? 'text-green-500' : 'text-red-500'}">${item.pm1}</span> µg/m³</p>
+        //               <p>UV: <span class="${item.uv <= 5 ? 'text-green-500' : 'text-red-500'}">${item.uv}</span></p>
+        //               <p class="text-sm text-gray-500">Time: ${new Date(item.timestamp).toLocaleString()}</p>
+        //             </div>
+        //           `;
+        // 
+        //           sensorDiv.addEventListener('click', () => {
+        //             openSensorModal(item.sensorId);
+        //           });
+        // 
+        //           envDiv.appendChild(sensorDiv);
+        //         });
       })
       .catch(err => {
         document.getElementById('environmental-data').innerHTML = `<p class="text-red-600">Error loading data: ${err.message}</p>`;
@@ -194,6 +360,7 @@
         })
         .then(data => {
           console.log(data)
+          //TODO: xoa het dong nay di
           const healthDiv = document.getElementById('health-data');
           if (data.length === 0) {
             healthDiv.innerHTML = '<p class="text-gray-500">No health data available</p>';
@@ -248,9 +415,10 @@
         options: {
           responsive: true,
           scales: {
-            x: { display: true, title: { display: true, text: 'Latest readings' } },
+            x: { display: true },
             y: { display: true, beginAtZero: true }
-          }
+          },
+          maintainAspectRatio: false
         }
       });
     }
@@ -275,8 +443,9 @@
           for (chart of charts) {
             dataset[chart] = {};
             dataset[chart].data = datas.map(data => data[chart])
-            dataset[chart].labels = datas.map(data => data.timestamp)
+            dataset[chart].labels = datas.map(data => formatTime(data.timestamp))
           }
+          console.log(dataset.heartRate.labels)
           if (heartRateChart) heartRateChart.destroy();
           if (oxygenLevelChart) oxygenLevelChart.destroy();
           if (healthTempChart) healthTempChart.destroy();
@@ -286,10 +455,21 @@
           healthTempChart = createLineChart(document.getElementById("healthTempChart").getContext('2d'), "Body Temperature (°C)", dataset.temperature, 'rgba(255, 99, 132, 1)');
         })
     }
+
+    function formatTime(input) {
+      const date = new Date(input);
+
+      const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+      const day = days[date.getDay()];
+      const hours = String(date.getHours() + 7).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+
+      return `${day}-${hours}:${minutes}`;
+    }
+
     // Open modal and render charts for a sensor
     function openSensorModal(sensorId) {
-      const modal = document.getElementById('sensorModal');
-      modal.classList.remove('hidden');
+
 
       //fetch data from /api/enviroment/:sensorID
       fetch(`/api/environmental/sensor/${sensorId}`)
@@ -306,7 +486,7 @@
             dataset[chart].data = datas.map(data => {
               return data[chart]
             })
-            dataset[chart].labels = datas.map(data => data.timestamp)
+            dataset[chart].labels = datas.map(data => formatTime(data.timestamp))
           }
           console.log(dataset)
           // Destroy existing charts if any
@@ -325,15 +505,7 @@
           uvChart = createLineChart(document.getElementById('uvChart').getContext('2d'), 'UV Index', dataset.uv, 'rgba(255, 159, 64, 1)');
         })
     }
-    // Close modal
-    document.getElementById('modalSensorCloseBtn').addEventListener('click', () => {
-      document.getElementById('sensorModal').classList.add('hidden');
-    });
-
-    // Close modal
-    document.getElementById('modalHealthCloseBtn').addEventListener('click', () => {
-      document.getElementById('healthModal').classList.add('hidden');
-    });
+    openSensorModal('SENSOR_001');
 
   </script>
 </body>
