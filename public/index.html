@@ -21,64 +21,74 @@
   </header> -->
 
   <header
-    class="backdrop-blur-md bg-gradient-to-r from-[#3A59D1]/30 via-[#3D90D7]/30 to-[#B5FCCD]/30 border border-white/20 shadow-md rounded-b-2xl p-4 mb-6 ">
+    class="backdrop-blur-md bg-gradient-to-r from-[#3A59D1]/30 via-[#3D90D7]/30 to-[#B5FCCD]/30 border border-white/20 shadow-md rounded-b-2xl p-4 mb-6">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-      <h1 class=" text-2xl font-bold text-white drop-shadow-md">
+      <h1 class="text-2xl font-bold text-white drop-shadow-md">
         Environment & Health Monitor
       </h1>
       <div id="auth-links"
         class="flex space-x-4 bg-white/30 backdrop-blur-sm border border-white/20 text-white font-medium px-4 py-2 rounded-lg hover:bg-white/50 hover:text-black transition">
-        <a href="/auth.html" id="login-link" class=" hover:text-black">Login / Register</a>
-        <button id="logoutBtn" class="text-red-600 hover:underline hidden">Logout</button>
+        <a href="/auth.html" id="login-link" class="hover:text-black">Login / Register</a>
+        <button id="logoutBtn" class="text-red-600 hover:underline hidden">
+          Logout
+        </button>
       </div>
     </div>
-
-
   </header>
 
   <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
     <!-- Environmental Data -->
     <section class="backdrop-blur-md bg-white/30 border border-white/20 rounded-2xl shadow-lg p-6">
       <section class="">
-        <h2 class="text-xl font-semibold mb-4">Latest Environmental Data from Sensors</h2>
+        <h2 class="text-xl font-semibold mb-4">
+          Latest Environmental Data from Sensors
+        </h2>
         <div id="environmental-data" class="grid justify-center grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"></div>
       </section>
 
-      <section class="py-4 ">
+      <section class="py-4">
         <div class="bg-white rounded-2xl shadow-md flex overflow-hidden sm:flex-row flex-col">
           <!-- Left -->
           <div class="sm:sm:w-[15%] w-full w-full p-4 flex flex-col justify-center">
             <h3 class="text-lg font-semibold text-blue-700">Temperature</h3>
-            <p class="text-3xl font-bold text-red-500 mt-2"><span id="tempIndex">28</span>°C</p>
-            <p class="text-sm text-yellow-600 mt-2" id="temperatureNotice">Slightly above normal</p>
+            <p class="text-3xl font-bold text-red-500 mt-2">
+              <span id="tempIndex">28</span>°C
+            </p>
+            <p class="text-sm text-yellow-600 mt-2" id="temperatureNotice">
+              Slightly above normal
+            </p>
           </div>
           <!-- Middle -->
-          <div class="sm:sm:w-[70%] w-full w-full  p-4">
+          <div class="sm:sm:w-[70%] w-full w-full p-4">
             <div class="w-full h-48 flex items-center justify-center text-gray-400">
               <canvas id="tempChart"></canvas>
             </div>
           </div>
           <!-- Right -->
-          <div class="sm:sm:w-[15%] w-full w-[30%]  p-4 flex flex-col justify-center border-l border-gray-200">
+          <div class="sm:sm:w-[15%] w-full w-[30%] p-4 flex flex-col justify-center border-l border-gray-200">
             <div class="flex justify-between text-sm text-gray-600 mb-2">
               <span class="font-medium">Max</span>
-              <span>32°C</span>
+              <span>30°C</span>
             </div>
             <div class="flex justify-between text-sm text-gray-600">
               <span class="font-medium">Min</span>
-              <span>18°C</span>
+              <span>21°C</span>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="py-4 ">
+      <section class="py-4">
         <div class="bg-white rounded-2xl shadow-md flex overflow-hidden sm:flex-row flex-col">
           <!-- Left -->
           <div class="sm:w-[15%] w-full p-4 flex flex-col justify-center">
             <h3 class="text-lg font-semibold text-green-700">Humidity</h3>
-            <p class="text-3xl font-bold text-blue-500 mt-2"><span id="humiIndex">65</span>%</p>
-            <p class="text-sm text-green-600 mt-2" id="humidityNotice">Comfortable</p>
+            <p class="text-3xl font-bold text-blue-500 mt-2">
+              <span id="humiIndex">65</span>%
+            </p>
+            <p class="text-sm text-green-600 mt-2" id="humidityNotice">
+              Comfortable
+            </p>
           </div>
           <!-- Middle -->
           <div class="sm:w-[70%] w-full p-4">
@@ -90,23 +100,27 @@
           <div class="sm:w-[15%] w-full p-4 flex flex-col justify-center border-l border-gray-200">
             <div class="flex justify-between text-sm text-gray-600 mb-2">
               <span class="font-medium">Max</span>
-              <span>80%</span>
+              <span>70%</span>
             </div>
             <div class="flex justify-between text-sm text-gray-600">
               <span class="font-medium">Min</span>
-              <span>45%</span>
+              <span>30%</span>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="py-4 ">
+      <section class="py-4">
         <div class="bg-white rounded-2xl shadow-md flex overflow-hidden sm:flex-row flex-col">
           <!-- Left -->
           <div class="sm:w-[15%] w-full p-4 flex flex-col justify-center">
             <h3 class="text-lg font-semibold text-purple-700">PM2.5</h3>
-            <p class="text-3xl font-bold text-purple-600 mt-2"><span id="pm25Index">45</span> µg/m³</p>
-            <p class="text-sm text-red-600 mt-2" id="pm25Notice">Unhealthy for sensitive groups</p>
+            <p class="text-3xl font-bold text-purple-600 mt-2">
+              <span id="pm25Index">45</span> µg/m³
+            </p>
+            <p class="text-sm text-red-600 mt-2" id="pm25Notice">
+              Unhealthy for sensitive groups
+            </p>
           </div>
           <!-- Middle -->
           <div class="sm:w-[70%] w-full p-4">
@@ -119,7 +133,7 @@
           <div class="sm:w-[15%] w-full p-4 flex flex-col justify-center border-l border-gray-200">
             <div class="flex justify-between text-sm text-gray-600 mb-2">
               <span class="font-medium">Max</span>
-              <span>60</span>
+              <span>50</span>
             </div>
             <div class="flex justify-between text-sm text-gray-600">
               <span class="font-medium">Min</span>
@@ -129,13 +143,17 @@
         </div>
       </section>
 
-      <section class="py-4 ">
+      <section class="py-4">
         <div class="bg-white rounded-2xl shadow-md flex overflow-hidden sm:flex-row flex-col">
           <!-- Left -->
           <div class="sm:w-[15%] w-full p-4 flex flex-col justify-center">
             <h3 class="text-lg font-semibold text-yellow-700">UV Index</h3>
-            <p class="text-3xl font-bold text-orange-500 mt-2" id="uvIndex">7</p>
-            <p class="text-sm text-orange-600 mt-2" id="uvNotice">High - Use protection</p>
+            <p class="text-3xl font-bold text-orange-500 mt-2" id="uvIndex">
+              7
+            </p>
+            <p class="text-sm text-orange-600 mt-2" id="uvNotice">
+              High - Use protection
+            </p>
           </div>
           <!-- Middle -->
           <div class="sm:w-[70%] w-full p-4">
@@ -147,7 +165,7 @@
           <div class="sm:w-[15%] w-full p-4 flex flex-col justify-center border-l border-gray-200">
             <div class="flex justify-between text-sm text-gray-600 mb-2">
               <span class="font-medium">Max</span>
-              <span>9</span>
+              <span>5</span>
             </div>
             <div class="flex justify-between text-sm text-gray-600">
               <span class="font-medium">Min</span>
@@ -157,13 +175,17 @@
         </div>
       </section>
 
-      <section class="py-4 ">
+      <section class="py-4">
         <div class="bg-white rounded-2xl shadow-md flex overflow-hidden sm:flex-row flex-col">
           <!-- Left -->
           <div class="sm:w-[15%] w-full p-4 flex flex-col justify-center">
             <h3 class="text-lg font-semibold text-gray-800">AQI</h3>
-            <p class="text-3xl font-bold text-red-500 mt-2" id="aqiIndex">120</p>
-            <p class="text-sm text-red-600 mt-2" id="aqiNotice">Unhealthy for sensitive groups</p>
+            <p class="text-3xl font-bold text-red-500 mt-2" id="aqiIndex">
+              120
+            </p>
+            <p class="text-sm text-red-600 mt-2" id="aqiNotice">
+              Unhealthy for sensitive groups
+            </p>
           </div>
           <!-- Middle -->
           <div class="sm:w-[70%] w-full p-4">
@@ -194,22 +216,26 @@
         <div id="health-data" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"></div>
       </section>
       <div id="isHealthShow">
-        <section class="py-4 ">
+        <section class="py-4">
           <div class="bg-white rounded-2xl shadow-md flex overflow-hidden sm:flex-row flex-col">
             <!-- Left -->
             <div class="sm:sm:w-[15%] w-full w-full p-4 flex flex-col justify-center">
               <h3 class="text-lg font-semibold text-blue-700">Heart Rate</h3>
-              <p class="text-3xl font-bold text-red-500 mt-2"><span id="heartRateIndex">90</span>bpm</p>
-              <p class="text-sm text-yellow-600 mt-2" id="heartRateNotice">Slightly above normal</p>
+              <p class="text-3xl font-bold text-red-500 mt-2">
+                <span id="heartRateIndex">90</span>bpm
+              </p>
+              <p class="text-sm text-yellow-600 mt-2" id="heartRateNotice">
+                Slightly above normal
+              </p>
             </div>
             <!-- Middle -->
-            <div class="sm:sm:w-[70%] w-full w-full  p-4">
+            <div class="sm:sm:w-[70%] w-full w-full p-4">
               <div class="w-full h-48 flex items-center justify-center text-gray-400">
                 <canvas id="heartRateChart"></canvas>
               </div>
             </div>
             <!-- Right -->
-            <div class="sm:sm:w-[15%] w-full w-[30%]  p-4 flex flex-col justify-center border-l border-gray-200">
+            <div class="sm:sm:w-[15%] w-full w-[30%] p-4 flex flex-col justify-center border-l border-gray-200">
               <div class="flex justify-between text-sm text-gray-600 mb-2">
                 <span class="font-medium">Max</span>
                 <span>120 </span><span>BPM</span>
@@ -222,50 +248,60 @@
           </div>
         </section>
 
-        <section class="py-4 ">
+        <section class="py-4">
           <div class="bg-white rounded-2xl shadow-md flex overflow-hidden sm:flex-row flex-col">
             <!-- Left -->
             <div class="sm:sm:w-[15%] w-full w-full p-4 flex flex-col justify-center">
               <h3 class="text-lg font-semibold text-blue-700">SPO2</h3>
-              <p class="text-3xl font-bold text-red-500 mt-2"><span id="oxygenIndex">95</span>%</p>
-              <p class="text-sm text-yellow-600 mt-2" id="oxygenNotice">Slightly above normal</p>
+              <p class="text-3xl font-bold text-red-500 mt-2">
+                <span id="oxygenIndex">95</span>%
+              </p>
+              <p class="text-sm text-yellow-600 mt-2" id="oxygenNotice">
+                Slightly above normal
+              </p>
             </div>
             <!-- Middle -->
-            <div class="sm:sm:w-[70%] w-full w-full  p-4">
+            <div class="sm:sm:w-[70%] w-full w-full p-4">
               <div class="w-full h-48 flex items-center justify-center text-gray-400">
                 <canvas id="oxygenChart"></canvas>
               </div>
             </div>
             <!-- Right -->
-            <div class="sm:sm:w-[15%] w-full w-[30%]  p-4 flex flex-col justify-center border-l border-gray-200">
+            <div class="sm:sm:w-[15%] w-full w-[30%] p-4 flex flex-col justify-center border-l border-gray-200">
               <div class="flex justify-between text-sm text-gray-600 mb-2">
                 <span class="font-medium">Max</span>
                 <span>100 </span><span>BPM</span>
               </div>
               <div class="flex justify-between text-sm text-gray-600">
                 <span class="font-medium">Min</span>
-                <span>90 </span><span>BPM</span>
+                <span>92 </span><span>BPM</span>
               </div>
             </div>
           </div>
         </section>
 
-        <section class="py-4 ">
+        <section class="py-4">
           <div class="bg-white rounded-2xl shadow-md flex overflow-hidden sm:flex-row flex-col">
             <!-- Left -->
             <div class="sm:sm:w-[15%] w-full w-full p-4 flex flex-col justify-center">
-              <h3 class="text-lg font-semibold text-blue-700">Body temperature</h3>
-              <p class="text-3xl font-bold text-red-500 mt-2"><span id="healthTempIndex">37</span>°C</p>
-              <p class="text-sm text-yellow-600 mt-2" id="healthTempNotice">Slightly above normal</p>
+              <h3 class="text-lg font-semibold text-blue-700">
+                Body temperature
+              </h3>
+              <p class="text-3xl font-bold text-red-500 mt-2">
+                <span id="healthTempIndex">37</span>°C
+              </p>
+              <p class="text-sm text-yellow-600 mt-2" id="healthTempNotice">
+                Slightly above normal
+              </p>
             </div>
             <!-- Middle -->
-            <div class="sm:sm:w-[70%] w-full w-full  p-4">
+            <div class="sm:sm:w-[70%] w-full w-full p-4">
               <div class="w-full h-48 flex items-center justify-center text-gray-400">
                 <canvas id="healthTempChart"></canvas>
               </div>
             </div>
             <!-- Right -->
-            <div class="sm:sm:w-[15%] w-full w-[30%]  p-4 flex flex-col justify-center border-l border-gray-200">
+            <div class="sm:sm:w-[15%] w-full w-[30%] p-4 flex flex-col justify-center border-l border-gray-200">
               <div class="flex justify-between text-sm text-gray-600 mb-2">
                 <span class="font-medium">Max</span>
                 <span>38 </span><span>°C</span>
@@ -278,7 +314,6 @@
           </div>
         </section>
       </div>
-
     </section>
   </main>
 
@@ -303,106 +338,196 @@
     });
 
     socket.on("message", (data) => {
-      if (data.indexOf('test') >= 0) {
+      if (data.indexOf("test") >= 0) {
         console.log("test done");
-        return
-      };
+        return;
+      }
     });
+
+    socket.on('/data/health', (data) => {
+      try {
+        //update current data
+        heartRateIndex.textContent = data.heartRateIndex;
+        healthTempIndex.textContent = data.healthTempIndex;
+        oxygenIndex.textContent = data.oxygenIndex;
+
+        //get the notice
+        heartRateNotice.textContent = getNotice(
+          data.heartRateIndex,
+          "heatRate"
+        );
+        healthTempNotice.textContent = getNotice(data.healthTempIndex, "bodyTemperature");
+        oxygenNotice.textContent = getNotice(data.oxygenIndex, "spo2");
+
+        //update the chart
+        addData(heartRateChart, formatTime(), data.heartRateIndex);
+        addData(healthTempChart, formatTime(), data.healthTempIndex);
+        addData(oxygenLevelChart, formatTime(), data.oxygenIndex);
+      } catch (e) {
+        console.log(e);
+      }
+    })
+
+    socket.on('/data/envir', (data) => {
+      try {
+        //update current data
+        tempIndex.textContent = data.tempIndex;
+        humiIndex.textContent = data.humiIndex;
+        uvIndex.textContent = data.uvIndex;
+        aqiIndex.textContent = data.aqiIndex;
+        pm25Index.textContent = data.pm25Index;
+
+        //get the notice
+        temperatureNotice.textContent = getNotice(
+          data.tempIndex,
+          "temperature"
+        );
+        humidityNotice.textContent = getNotice(data.humiIndex, "humidity");
+        uvNotice.textContent = getNotice(data.uvIndex, "uv");
+        aqiNotice.textContent = getNotice(data.aqiIndex, "aqi");
+        pm25Notice.textContent = getNotice(data.pm25Index, "pm25");
+
+        //update the chart
+        addData(tempChart, formatTime(), data.tempIndex);
+        addData(humidityChart, formatTime(), data.humiIndex);
+        addData(uvChart, formatTime(), data.uvIndex);
+        addData(pm25Chart, formatTime(), data.pm25Index);
+        addData(pm10Chart, formatTime(), data.aqiIndex);
+      } catch (e) {
+        console.log(e);
+      }
+    })
 
     socket.on("disconnect", () => {
       console.log(socket.connected); // false
     });
+
+    function testSocket(time) {
+      for (let i = 0; i < time; i++) {
+        socket.emit("message", {
+
+          humidity: randomFloat(10, 20),
+          temperature: randomFloat(10, 20),
+          uv: randomFloat(10, 20),
+          pm25: randomFloat(10, 20),
+          pm1: randomFloat(10, 20),
+          pm10: randomFloat(10, 20),
+          aqi: randomFloat(10, 20),
+          objectTemp: randomFloat(10, 20),
+          ambientTemp: randomFloat(10, 20),
+          heartRate: randomFloat(10, 20),
+          spo2: randomFloat(10, 20),
+          sensorId: 'SENSOR_001'
+        })
+      }
+    }
+
+    function randomFloat(max, min) {
+      return +(Math.random() * (max - min) + min).toFixed(2)
+    }
   </script>
   <script>
-    const token = localStorage.getItem('token') || '';
+    const token = localStorage.getItem("token") || "";
 
     // Show logout button if logged in
     // Update UI based on login status
     if (token) {
-      document.getElementById('logoutBtn').classList.remove('hidden');
-      document.getElementById('login-link').classList.add('hidden');
+      document.getElementById("logoutBtn").classList.remove("hidden");
+      document.getElementById("login-link").classList.add("hidden");
     }
     // Fetch and render environmental data
-    fetch('/api/environmental/latest')
-      .then(response => response.json())
-      .then(data => {
+    fetch("/api/environmental/latest")
+      .then((response) => response.json())
+      .then((data) => {
         // console.log(data)
 
         tempIndex.textContent = data[2].temperature;
         humiIndex.textContent = data[2].humidity;
         uvIndex.textContent = data[2].uv;
-        aqiIndex.textContent = data[2].pm10;
+        aqiIndex.textContent = data[2].aqi;
         pm25Index.textContent = data[2].pm25;
 
-        temperatureNotice.textContent = getNotice(data[2].temperature, "temperature")
-        humidityNotice.textContent = getNotice(data[2].humidity, "humidity")
-        uvNotice.textContent = getNotice(data[2].uv, "uv")
-        aqiNotice.textContent = getNotice(data[2].pm10, "aqi")
-        pm25Notice.textContent = getNotice(data[2].pm25, "pm25")
-        
+        temperatureNotice.textContent = getNotice(
+          data[2].temperature,
+          "temperature"
+        );
+        humidityNotice.textContent = getNotice(data[2].humidity, "humidity");
+        uvNotice.textContent = getNotice(data[2].uv, "uv");
+        aqiNotice.textContent = getNotice(data[2].pm10, "aqi");
+        pm25Notice.textContent = getNotice(data[2].pm25, "pm25");
       })
-      .catch(err => {
-        document.getElementById('environmental-data').innerHTML = `<p class="text-red-600">Error loading data: ${err.message}</p>`;
+      .catch((err) => {
+        document.getElementById(
+          "environmental-data"
+        ).innerHTML = `<p class="text-red-600">Error loading data: ${err.message}</p>`;
       });
 
     // Fetch health data
     if (token) {
-      fetch('/api/health/latest', {
-        headers: { 'Authorization': `Bearer ${token}` },
+      fetch("/api/health/latest", {
+        headers: { Authorization: `Bearer ${token}` },
       })
-        .then(response => {
+        .then((response) => {
           if (response.status === 401) {
-            localStorage.removeItem('token');
+            localStorage.removeItem("token");
             window.location.reload();
-            throw new Error('Please login');
+            throw new Error("Please login");
           }
           return response.json();
         })
-        .then(data => {
-          console.log("health")
-          console.log(data)
+        .then((data) => {
+          console.log("health");
+          console.log(data);
 
-          heartRateIndex.textContent = data[1].heartRate
-          oxygenIndex.textContent = data[1].oxygenLevel
-          healthTempIndex.textContent = data[1].temperature
+          heartRateIndex.textContent = data[2].heartRate;
+          oxygenIndex.textContent = data[2].oxygenLevel;
+          healthTempIndex.textContent = data[2].temperature;
 
-          heartRateNotice.textContent = getNotice(data[1].heartRate, "heartRate")
-          oxygenNotice.textContent = getNotice(data[1].oxygenLevel, "spo2")
-          healthTempNotice.textContent = getNotice(data[1].temperature, "bodyTemperature")
-
+          heartRateNotice.textContent = getNotice(
+            data[2].heartRate,
+            "heartRate"
+          );
+          oxygenNotice.textContent = getNotice(data[2].oxygenLevel, "spo2");
+          healthTempNotice.textContent = getNotice(
+            data[2].temperature,
+            "bodyTemperature"
+          );
         })
-        .catch(err => {
-          document.getElementById('health-data').innerHTML = `<p class="text-red-600">${err.message}</p>`;
+        .catch((err) => {
+          document.getElementById(
+            "health-data"
+          ).innerHTML = `<p class="text-red-600">${err.message}</p>`;
         });
-      openHealthModal("2")
+      openHealthModal("1");
     } else {
-      document.getElementById('health-data').innerHTML = '<p class="text-gray-500">Please login to view health data</p>';
-      document.getElementById('isHealthShow').classList.add('hidden');
+      document.getElementById("health-data").innerHTML =
+        '<p class="text-gray-500">Please login to view health data</p>';
+      document.getElementById("isHealthShow").classList.add("hidden");
     }
 
     function getNotice(value, type) {
       const config = {
         temperature: {
-          min: 25,
+          min: 23,
           max: 28,
-          threshold: 1,
+          threshold: 2,
           messages: {
             comfortable: "Comfortable",
             slightlyLow: "Slightly below normal",
             slightlyHigh: "Slightly above normal",
             tooLow: "Too cold",
-            tooHigh: "Too hot"
-          }
+            tooHigh: "Too hot",
+          },
         },
         uv: {
           min: 0,
-          max: 2,
-          threshold: 1,
+          max: 3,
+          threshold: 2,
           messages: {
             comfortable: "Low risk",
             slightlyHigh: "Moderate - Consider protection",
-            tooHigh: "High - Use protection"
-          }
+            tooHigh: "High - Use protection",
+          },
         },
         aqi: {
           min: 0,
@@ -411,20 +536,20 @@
           messages: {
             comfortable: "Good air quality",
             slightlyHigh: "Moderate",
-            tooHigh: "Unhealthy for sensitive groups"
-          }
+            tooHigh: "Unhealthy for sensitive groups",
+          },
         },
         humidity: {
           min: 40,
           max: 60,
-          threshold: 5,
+          threshold: 10,
           messages: {
             comfortable: "Comfortable humidity",
             slightlyLow: "Slightly dry",
             tooLow: "Too dry - Use humidifier",
             slightlyHigh: "Slightly humid",
-            tooHigh: "Too humid - Risk of mold"
-          }
+            tooHigh: "Too humid - Risk of mold",
+          },
         },
         pm25: {
           min: 0,
@@ -433,43 +558,43 @@
           messages: {
             comfortable: "Good air quality",
             slightlyHigh: "Moderate pollution",
-            tooHigh: "Unhealthy air - Wear mask"
-          }
+            tooHigh: "Unhealthy air - Wear mask",
+          },
         },
         heartRate: {
           min: 60,
           max: 100,
-          threshold: 10,
+          threshold: 20,
           messages: {
             comfortable: "Normal heart rate",
             slightlyLow: "Slightly low HR",
             tooLow: "Bradycardia - Too low",
             slightlyHigh: "Slightly high HR",
-            tooHigh: "Tachycardia - Too high"
-          }
+            tooHigh: "Tachycardia - Too high",
+          },
         },
         spo2: {
-          min: 95,
+          min: 92,
           max: 100,
           threshold: 2,
           messages: {
             comfortable: "Oxygen level normal",
             slightlyLow: "Slightly low oxygen",
-            tooLow: "Low oxygen - Check health"
-          }
+            tooLow: "Low oxygen - Check health",
+          },
         },
         bodyTemperature: {
-          min: 36.1,
-          max: 37.2,
+          min: 36,
+          max: 37.5,
           threshold: 0.5,
           messages: {
             comfortable: "Normal body temp",
             slightlyLow: "Slightly below normal",
             tooLow: "Hypothermia risk",
             slightlyHigh: "Slightly elevated",
-            tooHigh: "Fever detected"
-          }
-        }
+            tooHigh: "Fever detected",
+          },
+        },
       };
 
       const setting = config[type];
@@ -485,12 +610,11 @@
         else return messages.tooLow || "Too low";
       } else {
         const diff = value - max;
-        if (diff <= threshold) return messages.slightlyHigh || "Slightly high";
+        if (diff <= threshold)
+          return messages.slightlyHigh || "Slightly high";
         else return messages.tooHigh || "Too high";
       }
     }
-
-
 
     // Chart instances
     let tempChart, humidityChart, pm25Chart, pm10Chart, pm1Chart, uvChart;
@@ -499,92 +623,125 @@
     // Function to create a line chart
     function createLineChart(ctx, label, data, borderColor) {
       return new Chart(ctx, {
-        type: 'line',
+        type: "line",
         data: {
           labels: data.labels,
-          datasets: [{
-            label: label,
-            data: data.data,
-            borderColor: borderColor,
-            fill: false,
-            tension: 0.1
-          }]
+          datasets: [
+            {
+              label: label,
+              data: data.data,
+              borderColor: borderColor,
+              fill: false,
+              tension: 0.1,
+            },
+          ],
         },
         options: {
           responsive: true,
           scales: {
             x: { display: true },
-            y: { display: true, beginAtZero: true }
+            y: { display: true, beginAtZero: true },
           },
-          maintainAspectRatio: false
-        }
+          maintainAspectRatio: false,
+        },
       });
     }
 
     //Open modal and render charts for an user
     function openHealthModal(userID) {
-
       if (!token) {
-        document.getElementById('health-data').innerHTML = '<p class="text-gray-500">Please login to view health data</p>';
+        document.getElementById("health-data").innerHTML =
+          '<p class="text-gray-500">Please login to view health data</p>';
       }
 
       fetch(`/api/health/user/${userID}`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-      }).then(res => res.json())
-        .then(datas => {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => res.json())
+        .then((datas) => {
           console.log(datas);
 
-          const charts = ['heartRate', 'oxygenLevel', 'temperature'];
-          let dataset = {}
+          const charts = ["heartRate", "oxygenLevel", "temperature"];
+          let dataset = {};
           for (chart of charts) {
             dataset[chart] = {};
-            dataset[chart].data = datas.map(data => data[chart])
-            dataset[chart].labels = datas.map(data => formatTime(data.timestamp))
+            dataset[chart].data = datas.map((data) => data[chart]);
+            dataset[chart].labels = datas.map((data) =>
+              formatTime(data.timestamp)
+            );
           }
-          console.log(dataset.heartRate.labels)
+          console.log(dataset.heartRate.labels);
           if (heartRateChart) heartRateChart.destroy();
           if (oxygenLevelChart) oxygenLevelChart.destroy();
           if (healthTempChart) healthTempChart.destroy();
 
-          heartRateChart = createLineChart(document.getElementById("heartRateChart").getContext('2d'), "Heart Rate (BPM)", dataset.heartRate, 'rgba(255, 99, 132, 1)');
-          oxygenLevelChart = createLineChart(document.getElementById("oxygenChart").getContext('2d'), "Oxygen Level (%)", dataset.oxygenLevel, 'rgba(54, 162, 235, 1)');
-          healthTempChart = createLineChart(document.getElementById("healthTempChart").getContext('2d'), "Body Temperature (°C)", dataset.temperature, 'rgba(255, 99, 132, 1)');
-        })
+          heartRateChart = createLineChart(
+            document.getElementById("heartRateChart").getContext("2d"),
+            "Heart Rate (BPM)",
+            dataset.heartRate,
+            "rgba(255, 99, 132, 1)"
+          );
+          oxygenLevelChart = createLineChart(
+            document.getElementById("oxygenChart").getContext("2d"),
+            "Oxygen Level (%)",
+            dataset.oxygenLevel,
+            "rgba(54, 162, 235, 1)"
+          );
+          healthTempChart = createLineChart(
+            document.getElementById("healthTempChart").getContext("2d"),
+            "Body Temperature (°C)",
+            dataset.temperature,
+            "rgba(255, 99, 132, 1)"
+          );
+        });
     }
 
     function formatTime(input) {
-      const date = new Date(input);
+      let date
+      if (input) {
+        date = new Date(input);
+      } else {
+        date = new Date();
+      }
+
 
       const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
       const day = days[date.getDay()];
-      const hours = String(date.getHours() + 7).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const hours = String(date.getHours() + 7).padStart(2, "0");
+      const minutes = String(date.getMinutes()).padStart(2, "0");
 
       return `${day}-${hours}:${minutes}`;
     }
 
     // Open modal and render charts for a sensor
     function openSensorModal(sensorId) {
-
-
       //fetch data from /api/enviroment/:sensorID
       fetch(`/api/environmental/sensor/${sensorId}`)
-        .then(res => res.json())
-        .then(datas => {
-          console.log(datas)
+        .then((res) => res.json())
+        .then((datas) => {
+          console.log(datas);
 
-          const charts = ['temperature', 'humidity', 'pm25', 'pm10', 'pm1', 'uv'];// Chart types
-          let dataset = {}
+          const charts = [
+            "temperature",
+            "humidity",
+            "pm25",
+            "pm10",
+            "pm1",
+            "uv",
+          ]; // Chart types
+          let dataset = {};
           //create dataset and labels for each type
           for (chart of charts) {
             //create dataset and labels
-            dataset[chart] = {}
-            dataset[chart].data = datas.map(data => {
-              return data[chart]
-            })
-            dataset[chart].labels = datas.map(data => formatTime(data.timestamp))
+            dataset[chart] = {};
+            dataset[chart].data = datas.map((data) => {
+              return data[chart];
+            });
+            dataset[chart].labels = datas.map((data) =>
+              formatTime(data.timestamp)
+            );
           }
-          console.log(dataset)
+          console.log(dataset);
           // Destroy existing charts if any
           if (tempChart) tempChart.destroy();
           if (humidityChart) humidityChart.destroy();
@@ -593,16 +750,57 @@
           if (pm1Chart) pm1Chart.destroy();
           if (uvChart) uvChart.destroy();
 
-          tempChart = createLineChart(document.getElementById('tempChart').getContext('2d'), 'Temperature (°C)', dataset.temperature, 'rgba(255, 99, 132, 1)');
-          humidityChart = createLineChart(document.getElementById('humidityChart').getContext('2d'), 'Humidity (%)', dataset.humidity, 'rgba(54, 162, 235, 1)');
-          pm25Chart = createLineChart(document.getElementById('pm25Chart').getContext('2d'), 'PM2.5 (µg/m³)', dataset.pm25, 'rgba(255, 206, 86, 1)');
-          pm10Chart = createLineChart(document.getElementById('pm10Chart').getContext('2d'), 'PM10 (µg/m³)', dataset.pm10, 'rgba(75, 192, 192, 1)');
+          tempChart = createLineChart(
+            document.getElementById("tempChart").getContext("2d"),
+            "Temperature (°C)",
+            dataset.temperature,
+            "rgba(255, 99, 132, 1)"
+          );
+          humidityChart = createLineChart(
+            document.getElementById("humidityChart").getContext("2d"),
+            "Humidity (%)",
+            dataset.humidity,
+            "rgba(54, 162, 235, 1)"
+          );
+          pm25Chart = createLineChart(
+            document.getElementById("pm25Chart").getContext("2d"),
+            "PM2.5 (µg/m³)",
+            dataset.pm25,
+            "rgba(255, 206, 86, 1)"
+          );
+          pm10Chart = createLineChart(
+            document.getElementById("pm10Chart").getContext("2d"),
+            "PM10 (µg/m³)",
+            dataset.pm10,
+            "rgba(75, 192, 192, 1)"
+          );
           // pm1Chart = createLineChart(document.getElementById('pm1Chart').getContext('2d'), 'PM1 (µg/m³)', dataset.pm1, 'rgba(153, 102, 255, 1)');
-          uvChart = createLineChart(document.getElementById('uvChart').getContext('2d'), 'UV Index', dataset.uv, 'rgba(255, 159, 64, 1)');
-        })
+          uvChart = createLineChart(
+            document.getElementById("uvChart").getContext("2d"),
+            "UV Index",
+            dataset.uv,
+            "rgba(255, 159, 64, 1)"
+          );
+        });
     }
-    openSensorModal('SENSOR_001');
+    openSensorModal("SENSOR_001");
 
+
+    function addData(chart, label, newData) {
+      chart.data.labels.push(label);
+      chart.data.datasets.forEach((dataset) => {
+        dataset.data.push(newData);
+      });
+      chart.update();
+    }
+
+    function removeData(chart) {
+      chart.data.labels.shift();
+      chart.data.datasets.forEach((dataset) => {
+        dataset.data.shift();
+      });
+      chart.update();
+    }
   </script>
 </body>
 
