@@ -26,18 +26,18 @@ const users = [
     role: "admin",
     sensorId: null,
   },
-  {
-    email: "user1@example.com",
-    password: "user123",
-    role: "user",
-    sensorId: null,
-  },
-  {
-    email: "user2@example.com",
-    password: "user123",
-    role: "user",
-    sensorId: null,
-  },
+  // {
+  //   email: "user1@example.com",
+  //   password: "user123",
+  //   role: "user",
+  //   sensorId: null,
+  // },
+  // {
+  //   email: "user2@example.com",
+  //   password: "user123",
+  //   role: "user",
+  //   sensorId: null,
+  // },
 ];
 
 const environmentalData = [
@@ -48,7 +48,7 @@ const environmentalData = [
     pm10: 25,
     pm1: 10,
     uv: 3,
-    aqi: 2,
+    aqi: 60,
     sensorId: "SENSOR_001",
   },
   {
@@ -58,8 +58,8 @@ const environmentalData = [
     pm10: 30,
     pm1: 12,
     uv: 4,
-    aqi: 2,
-    sensorId: "SENSOR_002",
+    aqi: 60,
+    sensorId: "SENSOR_001",
   },
   {
     temperature: 22.3,
@@ -69,21 +69,21 @@ const environmentalData = [
     pm1: 8,
     uv: 2,
     aqi: 2,
-    sensorId: "SENSOR_003",
+    sensorId: "SENSOR_001",
   },
 ];
 
 const healthData = [
   {
-    userId: "2",
-    sensorId: "SENSOR_002",
+    userId: "1",
+    sensorId: "SENSOR_001",
     heartRate: 72,
     oxygenLevel: 98,
     temperature: 36.6,
   },
   {
-    userId: "3",
-    sensorId: "SENSOR_003",
+    userId: "1",
+    sensorId: "SENSOR_001",
     heartRate: 68,
     oxygenLevel: 100,
     temperature: 36.5,
@@ -91,50 +91,51 @@ const healthData = [
 ];
 
 async function seedDatabase() {
-  //   for (const user of users) {
-  //     try {
-  //       const userRecord = await admin.auth().createUser({
-  //         email: user.email,
-  //         password: user.password,
-  //       });
-  //       db.run(
-  //         `INSERT INTO Users (email, role, sensorId, firebaseUid) VALUES (?, ?, ?, ?)`,
-  //         [user.email, user.role, user.sensorId, userRecord.uid],
-  //         function (err) {
-  //           if (err) {
-  //             console.error("Error inserting User:", err.message);
-  //             admin.auth().deleteUser(userRecord.uid);
-  //           } else {
-  //             console.log(`Inserted User with ID: ${this.lastID}`);
-  //           }
-  //         }
-  //       );
-  //     } catch (err) {
-  //       console.error("Error creating Firebase user:", err.message);
-  //     }
-  //   }
-
-  //   environmentalData.forEach((data) => {
+  // for (const user of users) {
+  //   try {
+  //     const userRecord = await admin.auth().createUser({
+  //       email: user.email,
+  //       password: user.password,
+  //     });
   //     db.run(
-  //       `INSERT INTO EnvironmentalData (temperature, humidity, pm25, pm10, pm1, uv, sensorId) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-  //       [
-  //         data.temperature,
-  //         data.humidity,
-  //         data.pm25,
-  //         data.pm10,
-  //         data.pm1,
-  //         data.uv,
-  //         data.sensorId,
-  //       ],
+  //       `INSERT INTO Users (email, role, sensorId, firebaseUid) VALUES (?, ?, ?, ?)`,
+  //       [user.email, user.role, user.sensorId, "FlbFpW89Kxh4sUKPCzSI5x0RVpu2"],
   //       function (err) {
   //         if (err) {
-  //           console.error("Error inserting EnvironmentalData:", err.message);
+  //           console.error("Error inserting User:", err.message);
+  //           admin.auth().deleteUser(userRecord.uid);
   //         } else {
-  //           console.log(`Inserted EnvironmentalData with ID: ${this.lastID}`);
+  //           console.log(`Inserted User with ID: ${this.lastID}`);
   //         }
   //       }
   //     );
-  //   });
+  //   } catch (err) {
+  //     console.error("Error creating Firebase user:", err.message);
+  //   }
+  // }
+
+  environmentalData.forEach((data) => {
+    db.run(
+      `INSERT INTO EnvironmentalData (temperature, humidity, pm25, pm10, pm1, uv, sensorId, aqi) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        data.temperature,
+        data.humidity,
+        data.pm25,
+        data.pm10,
+        data.pm1,
+        data.uv,
+        data.sensorId,
+        data.aqi
+      ],
+      function (err) {
+        if (err) {
+          console.error("Error inserting EnvironmentalData:", err.message);
+        } else {
+          console.log(`Inserted EnvironmentalData with ID: ${this.lastID}`);
+        }
+      }
+    );
+  });
 
   //   healthData.forEach((data) => {
   //     db.run(

@@ -19,7 +19,7 @@ db.serialize(() => {
       pm10 REAL NOT NULL,
       pm1 REAL NOT NULL,
       uv REAL NOT NULL,
-      aqi INTERGERT OPTIONAL,
+      aqi REAL NOT NULL,
       timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
       sensorId TEXT NOT NULL
     )

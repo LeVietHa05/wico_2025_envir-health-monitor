@@ -190,7 +190,7 @@
           <!-- Middle -->
           <div class="sm:w-[70%] w-full p-4">
             <div class="w-full h-48 flex items-center justify-center text-gray-400">
-              <canvas id="pm10Chart"></canvas>
+              <canvas id="aqiChart"></canvas>
             </div>
           </div>
           <!-- Right -->
@@ -439,24 +439,25 @@
     fetch("/api/environmental/latest")
       .then((response) => response.json())
       .then((data) => {
-        // console.log(data)
+        console.log(data)
 
-        tempIndex.textContent = data[2].temperature;
-        humiIndex.textContent = data[2].humidity;
-        uvIndex.textContent = data[2].uv;
-        aqiIndex.textContent = data[2].aqi;
-        pm25Index.textContent = data[2].pm25;
+        tempIndex.textContent = data[0].temperature;
+        humiIndex.textContent = data[0].humidity;
+        uvIndex.textContent = data[0].uv;
+        aqiIndex.textContent = data[0].aqi;
+        pm25Index.textContent = data[0].pm25;
 
         temperatureNotice.textContent = getNotice(
-          data[2].temperature,
+          data[0].temperature,
           "temperature"
         );
-        humidityNotice.textContent = getNotice(data[2].humidity, "humidity");
-        uvNotice.textContent = getNotice(data[2].uv, "uv");
-        aqiNotice.textContent = getNotice(data[2].pm10, "aqi");
-        pm25Notice.textContent = getNotice(data[2].pm25, "pm25");
+        humidityNotice.textContent = getNotice(data[0].humidity, "humidity");
+        uvNotice.textContent = getNotice(data[0].uv, "uv");
+        aqiNotice.textContent = getNotice(data[0].aqi, "aqi");
+        pm25Notice.textContent = getNotice(data[0].pm25, "pm25");
       })
       .catch((err) => {
+        console.log(err)
         document.getElementById(
           "environmental-data"
         ).innerHTML = `<p class="text-red-600">Error loading data: ${err.message}</p>`;
@@ -479,17 +480,17 @@
           console.log("health");
           console.log(data);
 
-          heartRateIndex.textContent = data[2].heartRate;
-          oxygenIndex.textContent = data[2].oxygenLevel;
-          healthTempIndex.textContent = data[2].temperature;
+          heartRateIndex.textContent = data[0].heartRate;
+          oxygenIndex.textContent = data[0].oxygenLevel;
+          healthTempIndex.textContent = data[0].temperature;
 
           heartRateNotice.textContent = getNotice(
-            data[2].heartRate,
+            data[0].heartRate,
             "heartRate"
           );
-          oxygenNotice.textContent = getNotice(data[2].oxygenLevel, "spo2");
+          oxygenNotice.textContent = getNotice(data[0].oxygenLevel, "spo2");
           healthTempNotice.textContent = getNotice(
-            data[2].temperature,
+            data[0].temperature,
             "bodyTemperature"
           );
         })
@@ -617,7 +618,7 @@
     }
 
     // Chart instances
-    let tempChart, humidityChart, pm25Chart, pm10Chart, pm1Chart, uvChart;
+    let tempChart, humidityChart, pm25Chart, aqiChart, pm1Chart, uvChart;
     let healthTempChart, heartRateChart, oxygenLevelChart;
 
     // Function to create a line chart
@@ -632,7 +633,7 @@
               data: data.data,
               borderColor: borderColor,
               fill: false,
-              tension: 0.1,
+              tension: 0.4,
             },
           ],
         },
@@ -725,7 +726,7 @@
             "temperature",
             "humidity",
             "pm25",
-            "pm10",
+            "aqi",
             "pm1",
             "uv",
           ]; // Chart types
@@ -746,7 +747,7 @@
           if (tempChart) tempChart.destroy();
           if (humidityChart) humidityChart.destroy();
           if (pm25Chart) pm25Chart.destroy();
-          if (pm10Chart) pm10Chart.destroy();
+          if (aqiChart) aqiChart.destroy();
           if (pm1Chart) pm1Chart.destroy();
           if (uvChart) uvChart.destroy();
 
@@ -768,10 +769,10 @@
             dataset.pm25,
             "rgba(255, 206, 86, 1)"
           );
-          pm10Chart = createLineChart(
-            document.getElementById("pm10Chart").getContext("2d"),
-            "PM10 (µg/m³)",
-            dataset.pm10,
+          aqiChart = createLineChart(
+            document.getElementById("aqiChart").getContext("2d"),
+            "AQI",
+            dataset.aqi,
             "rgba(75, 192, 192, 1)"
           );
           // pm1Chart = createLineChart(document.getElementById('pm1Chart').getContext('2d'), 'PM1 (µg/m³)', dataset.pm1, 'rgba(153, 102, 255, 1)');

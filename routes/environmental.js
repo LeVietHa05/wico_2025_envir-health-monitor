@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
 
 // GET latest environmental data for each sensorId (public)
 router.get('/latest', (req, res) => {
-    db.all(`
+    let query = `
     SELECT e1.*
     FROM EnvironmentalData e1
     INNER JOIN (
@@ -22,7 +22,9 @@ router.get('/latest', (req, res) => {
       FROM EnvironmentalData
       GROUP BY sensorId
     ) e2 ON e1.sensorId = e2.sensorId AND e1.timestamp = e2.maxTimestamp
-  `, [], (err, rows) => {
+  `
+  query = 'SElECT * FROM EnvironmentalData WHERE sensorId = ? ORDER BY timestamp DESC LIMIT 1'
+    db.all(query, ["SENSOR_001"], (err, rows) => {
         if (err) {
             return res.status(500).json({ message: err.message });
         }

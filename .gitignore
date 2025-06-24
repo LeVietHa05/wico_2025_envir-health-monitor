@@ -1,6 +1,6 @@
 node_modules 
 dist
 node_modules/
-database.db
+# database.db
 .env
 firebase-adminsdk.json
